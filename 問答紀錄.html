@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>問答紀錄｜美術提問與解法</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --tx:#e8eaf0; --tx2:#a8b0c0; --tx3:#7b8499;
+    --accent:#7c9cff; --accent2:#5ad1c4; --gold:#e8c14b;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+    line-height:1.7;font-size:15px;}
+  .nav{position:sticky;top:0;z-index:30;background:rgba(15,17,21,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .nav .inner{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .nav .brand{font-weight:700;font-size:15px;margin-right:10px;letter-spacing:.5px;}
+  .nav a{color:var(--tx2);text-decoration:none;font-size:14px;padding:7px 13px;border-radius:9px;border:1px solid transparent;transition:.15s;}
+  .nav a:hover{color:#fff;border-color:var(--line);}
+  .nav a.on{background:var(--accent);color:#0f1115;font-weight:700;}
+  .nav a.soon{color:var(--tx3);cursor:default;}
+  .nav a.soon::after{content:"即將推出";font-size:10px;margin-left:6px;color:var(--tx3);border:1px solid var(--line);border-radius:5px;padding:1px 5px;}
+  .wrap{max-width:1080px;margin:0 auto;padding:30px 22px 100px;}
+  h1{font-size:27px;margin:0 0 6px;letter-spacing:.5px;}
+  .sub{color:var(--tx2);font-size:14px;margin-bottom:20px;}
+  b,strong{color:#fff;}
+
+  /* 搜尋 + 篩選 */
+  .tools{position:sticky;top:57px;z-index:20;background:var(--bg);padding:14px 0 12px;margin-bottom:6px;border-bottom:1px solid var(--line);}
+  .search{position:relative;}
+  .search input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    color:var(--tx);font-size:15px;padding:13px 16px 13px 42px;font-family:inherit;}
+  .search input:focus{outline:none;border-color:var(--accent);}
+  .search .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:16px;}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;}
+  .chip{font-size:13px;border:1px solid var(--line);border-radius:8px;padding:5px 12px;color:var(--tx2);
+    background:var(--panel);cursor:pointer;transition:.15s;user-select:none;}
+  .chip:hover{color:#fff;border-color:var(--accent2);}
+  .chip.on{background:var(--accent);color:#0f1115;font-weight:700;border-color:var(--accent);}
+  /* 主分頁：圖片 / 影片 */
+  .tabs{display:flex;gap:8px;margin-top:12px;}
+  .tab{flex:0 0 auto;font-size:14.5px;font-weight:700;border:1px solid var(--line);border-radius:11px;
+    padding:9px 22px;color:var(--tx2);background:var(--panel);cursor:pointer;transition:.15s;user-select:none;
+    display:inline-flex;align-items:center;gap:7px;}
+  .tab:hover{color:#fff;border-color:var(--accent2);}
+  .tab.on{background:var(--accent);color:#0f1115;border-color:var(--accent);}
+  .tab .n{font-size:12px;font-weight:600;opacity:.8;}
+  .count{color:var(--tx3);font-size:12.5px;margin:10px 2px 0;}
+
+  /* 問答卡片 */
+  .qa{border:1px solid var(--line);border-radius:14px;margin:12px 0;overflow:hidden;background:var(--panel);}
+  .qa-h{width:100%;display:flex;align-items:flex-start;gap:12px;padding:15px 18px;background:none;border:0;
+    color:var(--tx);font-size:16px;cursor:pointer;text-align:left;font-family:inherit;line-height:1.5;}
+  .qa-h:hover{background:var(--panel2);}
+  .qa-h .q{font-weight:700;flex:1;min-width:0;}
+  .qa-h .q .qmark{color:var(--accent2);margin-right:8px;font-weight:800;}
+  .qa-h .chev{color:var(--tx3);transition:.15s;flex:none;margin-top:3px;}
+  .qa-h.open .chev{transform:rotate(90deg);color:var(--accent2);}
+  .qa-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:7px;}
+  .qa-meta .tag{font-size:11.5px;border:1px solid var(--line);border-radius:6px;padding:1px 8px;color:var(--tx2);background:var(--panel2);}
+  .qa-meta .date{font-size:11.5px;color:var(--tx3);}
+  .qa-b{display:none;padding:2px 18px 18px;border-top:1px solid var(--line);}
+  .qa-b.open{display:block;}
+  .qa-b h4{font-size:13px;color:var(--accent2);margin:16px 0 6px;letter-spacing:.5px;}
+  .qa-b p{margin:6px 0;color:var(--tx2);}
+  .qa-b ol,.qa-b ul{margin:6px 0;padding-left:22px;color:var(--tx2);}
+  .qa-b li{margin:5px 0;}
+  .qa-b code{background:#0b0d12;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px;color:#cdd3e0;
+    font-family:ui-monospace,Menlo,monospace;}
+  .qa-b pre{background:#0b0d12;border:1px solid var(--line);border-radius:10px;padding:13px 15px;overflow-x:auto;
+    font-size:13px;color:#cdd3e0;line-height:1.6;font-family:ui-monospace,Menlo,monospace;}
+  /* 可複製 prompt 框 */
+  .prompt{position:relative;background:#0b0d12;border:1px solid var(--line);border-radius:11px;padding:14px 46px 14px 16px;margin:10px 0 2px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:#cdd3e0;line-height:1.6;white-space:pre-wrap;}
+  .prompt .cp{position:absolute;top:10px;right:10px;background:var(--panel2);border:1px solid var(--line);color:var(--tx2);border-radius:7px;font-size:12px;padding:5px 11px;cursor:pointer;font-family:inherit;}
+  .prompt .cp:hover{border-color:var(--accent);background:var(--accent);color:#0f1115;}
+  /* 步驟 + 圖片槽 */
+  .steps{list-style:none;margin:8px 0;padding:0;counter-reset:step;}
+  .steps>li{position:relative;padding:0 0 4px 40px;margin:0 0 20px;counter-increment:step;}
+  .steps>li::before{content:counter(step);position:absolute;left:0;top:0;width:26px;height:26px;
+    display:flex;align-items:center;justify-content:center;background:var(--accent);color:#0f1115;
+    font-weight:800;font-size:14px;border-radius:50%;}
+  .steps>li .st-t{color:var(--tx);font-size:15px;margin:2px 0 0;}
+  .shot{margin:12px 0 0;position:relative;max-width:100%;}
+  .shot img,.shot video{width:100%;display:block;border:1px solid var(--line);border-radius:11px;background:#000;}
+  .shot .ph{border:1.5px dashed var(--line);border-radius:11px;background:var(--panel2);min-height:150px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    color:var(--tx3);font-size:13px;padding:24px;gap:6px;}
+  .shot .ph code{color:var(--accent);font-size:12px;}
+  .shot figcaption{color:var(--tx3);font-size:12px;margin-top:6px;}
+  .empty{text-align:center;color:var(--tx3);padding:50px 20px;font-size:14px;display:none;}
+
+  @media(max-width:640px){.wrap{padding:24px 16px 80px;}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="inner">
+    <span class="brand">AI 生成工具教學</span>
+    <a href="index.html">Leonardo 教學</a>
+    <a href="Leonardo選模型.html">圖片模型評測</a>
+    <a href="評測樣本.html">圖片評判標準與樣本</a>
+    <a class="soon">影片模型評測</a>
+    <a class="on" href="問答紀錄.html">問答紀錄</a>
+    <a class="soon">Higgsfield</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <h1>問答紀錄</h1>
+  <div class="sub">美術實際問過的問題與當時的解法／實作過程，方便日後查詢。用上方搜尋框或點分類標籤來找。</div>
+
+  <div class="tools">
+    <div class="search">
+      <span class="ic">🔍</span>
+      <input id="q" type="text" placeholder="搜尋問題、關鍵字、解法…（例如：送不出去、模型、風格）" autocomplete="off">
+    </div>
+    <div class="tabs" id="tabs">
+      <span class="tab on" data-tab="img">🖼️ 圖片 <span class="n" id="n-img"></span></span>
+      <span class="tab" data-tab="vid">🎬 影片 <span class="n" id="n-vid"></span></span>
+    </div>
+    <div class="count" id="count"></div>
+  </div>
+
+  <!-- ==========================================================
+       如何新增一則問答：複製下面整個 <article class="qa"> ... </article>，
+       放進對應分頁的清單即可：
+         圖片問題 → 放進 <div id="list-img"> 裡
+         影片問題 → 放進 <div id="list-vid"> 裡
+       每則只要改：
+       1) data-date="2026-07-03" → 日期（顯示用，可留空）
+       2) 問題文字、標籤 <span class="tag">、以及「情境 / 解法」內容
+       搜尋會自動掃描整張卡片的文字，不需額外設定。
+  =========================================================== -->
+
+  <!-- ===================== 圖片 ===================== -->
+  <div id="list-img">
+
+    <!-- ===== Image Reference（圖片參考） ===== -->
+    <article class="qa" data-date="2026-07-03">
+      <button class="qa-h">
+        <span class="q"><span class="qmark">Q</span>Image Reference：用參考圖生成想要的風格 / 角色</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="qa-meta" style="padding:0 18px 14px 48px">
+        <span class="tag">Leonardo</span>
+        <span class="tag">Image Reference</span>
+        <span class="tag">圖生圖</span>
+        <span class="date">2026-07-03</span>
+      </div>
+      <div class="qa-b">
+        <h4>用途</h4>
+        <p>Image Reference 是「餵一張參考圖給模型」，讓生成結果參考它的<b>風格、構圖、角色或內容</b>，而不只是靠文字描述。適合想延續某個畫風、或想固定某個角色 / 物件時使用。</p>
+
+        <h4>步驟</h4>
+        <ol class="steps">
+          <li>
+            <div class="st-t">進入 <b>Image</b> 生成頁，在 prompt 輸入框左側點<b>圖片</b>的圖示，把參考圖上傳進來。</div>
+            <figure class="shot">
+              <img src="教學圖/問答紀錄/p1-1.png" alt="上傳參考圖" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="ph" style="display:none">放圖片：上傳參考圖的位置<br><code>教學圖/問答紀錄/Q1.png</code></div>
+            </figure>
+          </li>
+          <li>
+            <div class="st-t">這次我們實作一個阿努比斯,選好模型及參考圖片後,輸入要生成的圖片描述,再按 Generate。</div>
+            <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>Same art style as the reference image.
+
+A majestic depiction of Anubis, the ancient Egyptian god of the dead. He has a smooth black jackal head with long upright ears and glowing amber-gold eyes. His physique is tall, lean, and powerfully athletic.
+
+He wears an ornate black-and-gold pharaonic headdress, a broad gold collar inlaid with turquoise, and intricately crafted ceremonial armor inspired by ancient Egypt. Around his waist hangs layered flowing linen robes and royal fabrics decorated with gold ornaments and hieroglyphic patterns.
+
+In his right hand he holds a magnificent golden ceremonial staff topped with the sacred symbol of Anubis. In his left hand he holds an ancient khopesh sword.
+
+Gold ornaments decorate his wrists, upper arms, and ankles.
+
+Pure black background. Full-body character portrait. Standing upright, facing forward in a calm and dignified pose.
+
+Do not add any extra objects, creatures, effects, environment, smoke, particles, lighting props, jewelry, wings, capes, cloth pieces, symbols, or background elements beyond those explicitly described.</div>
+<ul>
+  <li>強調風格與圖片一致</li>
+  <li>阿努比斯的外觀描述</li>
+  <li>背景與人物姿態描述</li>
+  <li>限制描述,避免他生成沒有提到的內容</li>
+</ul>
+          </li>
+        </ol>
+        <h4>成果對照</h4>
+        <div class="vpair" style="display:flex;gap:14px;flex-wrap:wrap">
+          <figure class="shot" style="flex:1;min-width:280px;max-width:460px">
+            <img src="教學圖/問答紀錄/p1-2.png" alt="參考圖" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="ph" style="display:none">放圖片：參考圖<br><code>教學圖/問答紀錄/Q4.png</code></div>
+            <figcaption>參考圖</figcaption>
+          </figure>
+          <figure class="shot" style="flex:1;min-width:280px;max-width:460px">
+            <img src="教學圖/問答紀錄/p1-3.png" alt="生成結果" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="ph" style="display:none">放圖片：生成結果<br><code>教學圖/問答紀錄/Q5.png</code></div>
+            <figcaption>生成結果</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+    <!-- ===== /Image Reference ===== -->
+
+    <!-- ===== 內容融合（兩張圖各自抓取內容） ===== -->
+    <article class="qa" data-date="2026-07-03">
+      <button class="qa-h">
+        <span class="q"><span class="qmark">Q</span>Image Reference：用兩張圖各自抓取內容做融合</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="qa-meta" style="padding:0 18px 14px 48px">
+        <span class="tag">Leonardo</span>
+        <span class="tag">內容融合</span>
+        <span class="tag">多圖參考</span>
+        <span class="date">2026-07-03</span>
+      </div>
+      <div class="qa-b">
+        <h4>用途</h4>
+        <p>想同時參考<b>兩張圖</b>，而且各自只取其中一部分——例如「A 圖的角色 ＋ B 圖的服裝／場景」。作法是放多張參考圖，再用文字 prompt 指定各自要保留的重點。</p>
+
+        <h4>步驟</h4>
+        <ol class="steps">
+          <li>
+            <div class="st-t">上傳兩張要參考的圖片</div>
+            <figure class="shot">
+              <img src="教學圖/問答紀錄/p1-1.png" alt="上傳第一張參考圖" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="ph" style="display:none">放圖片：上傳第一張參考圖<br><code>教學圖/問答紀錄/p2-1.png</code></div>
+            </figure>
+          </li>
+          <li>
+            <div class="st-t">這次做圖片融合,輸入描述後按generate</div>
+           <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>Use the machine cabinet design, overall structure, proportions, materials, colors, decorative details, and lighting style from Image 1.
+
+Replace only the central feature of the machine with the main element from Image 2, redesigned to seamlessly match the artistic style and visual language of Image 1. Integrate matching light bulbs around the central element using the same shape, spacing, materials, colors, and illumination style as the light bulbs on the machine in Image 1, making it appear as an original part of the machine.
+
+Use the background atmosphere, environment, lighting mood, and overall ambiance from Image 2.
+
+Keep the machine design from Image 1 unchanged except for the central feature. Do not alter the cabinet shape, frame, proportions, decorative ornaments, materials, or color palette. Blend all elements naturally into a single cohesive design with consistent style, lighting, and perspective.</div>
+            <ul>
+              <li>描述可以寫個大概丟到 ChatGPT 之類的地方幫忙修改</li>
+              <li>將個別需要的元素拆解描述</li>
+              <li>redesigned to seamlessly match the artistic style and visual language of Image 1 ⇒ 不是直接把圖二的風格貼到機台中間，而是把圖二的元素重新設計成與圖一一致的美術風格</li>
+              <li>如果有些細節沒做到、或要再加東西，就拿目前最好的圖針對沒做好的地方再次修改，不要要求一次到位</li>
+            </ul>
+          </li>
+        </ol>
+        <h4>成果對照</h4>
+        <div class="vpair" style="display:flex;gap:14px;flex-wrap:wrap">
+          <figure class="shot" style="flex:1;min-width:220px;max-width:320px">
+            <img src="教學圖/問答紀錄/p2-1.jpg" alt="圖 1" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <figcaption>圖 1（機台 / 主結構）</figcaption>
+          </figure>
+          <figure class="shot" style="flex:1;min-width:220px;max-width:320px">
+            <img src="教學圖/問答紀錄/p2-2.png" alt="圖 2" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <figcaption>圖 2（中心元素 / 氛圍）</figcaption>
+          </figure>
+          <figure class="shot" style="flex:1;min-width:220px;max-width:320px">
+            <img src="教學圖/問答紀錄/p2-3.jpg" alt="融合結果" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <figcaption>融合結果</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+    <!-- ===== /內容融合 ===== -->
+
+  </div>
+
+  <!-- ===================== 影片 ===================== -->
+  <div id="list-vid" style="display:none">
+
+    <!-- ===== Video Reference + Image Reference 換顏色 ===== -->
+    <article class="qa" data-date="2026-07-03">
+      <button class="qa-h">
+        <span class="q"><span class="qmark">Q</span>Video Reference：搭配 Image Reference 幫影片換顏色</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="qa-meta" style="padding:0 18px 14px 48px">
+        <span class="tag">Higgsfield</span>
+        <span class="tag">Video Reference</span>
+        <span class="tag">Image Reference</span>
+        <span class="tag">換配色</span>
+        <span class="date">2026-07-03</span>
+      </div>
+      <div class="qa-b">
+        <h4>用途</h4>
+        <p>想<b>保留一支影片的動作 / 構圖</b>，只把它的<b>配色換掉</b>。作法是用 <b>Video Reference</b> 鎖住動態，再加一張 <b>Image Reference</b> 當顏色來源，讓輸出影片套上參考圖的配色。</p>
+
+        <h4>步驟</h4>
+        <ol class="steps">
+          <li>
+            <div class="st-t">在 <b>Higgsfield.ai</b> 點擊+符號,選擇要參考的影片及圖片。</div>
+            <figure class="shot">
+              <img src="教學圖/問答紀錄/v1-1.png" alt="在 Higgsfield 選 Video Reference 功能" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="ph" style="display:none">放圖片：在 Higgsfield 選 Video Reference 功能<br><code>教學圖/問答紀錄/v1-1.png</code></div>
+            </figure>
+          </li>
+          <li>
+            <div class="st-t">輸入替換的描述</div>
+            <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>影片二換成圖一的顏色</div>
+          </li>
+        </ol>
+        <h4>成果對照</h4>
+        <div class="vpair" style="display:flex;gap:14px;flex-wrap:wrap">
+          <figure class="shot" style="flex:1;min-width:220px;max-width:320px">
+            <img src="教學圖/問答紀錄/v1-2.png" alt="原始參考影片" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <figcaption>參考圖片（顏色來源）</figcaption>
+          </figure>
+          <figure class="shot" style="flex:1;min-width:220px;max-width:320px">
+            <video class="vid" controls preload="metadata" src="教學圖/問答紀錄/v1-3.mp4"></video>
+            <figcaption>原始影片（要換色的影片）</figcaption>
+          </figure>
+          <figure class="shot" style="flex:1;min-width:220px;max-width:320px">
+            <video class="vid" controls preload="metadata" src="教學圖/問答紀錄/v1-4.mp4"></video>
+            <figcaption>換色後結果</figcaption>
+          </figure>
+        </div>
+
+        <h4>注意事項</h4>
+        <ul>
+          <li>本次模型使用Seedance 2模型才用中文描述,部分模型對中文有較好的理解,大部分仍是英文為主</li>
+          <li>video reference會有最低秒數限制</li>
+          <li>像本次範例的影片只有3秒,所以當第四秒時會發現外匡顏色有變化,可以根據用途做刪減或者參考影片長一點</li>
+        </ul>
+      </div>
+    </article>
+    <!-- ===== /Video Reference + Image Reference 換顏色 ===== -->
+
+    <!-- ===== Image to Video 圖片變影片 ===== -->
+    <article class="qa" data-date="2026-07-03">
+      <button class="qa-h">
+        <span class="q"><span class="qmark">Q</span>Image to Video：讓一張圖片動起來變成影片</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="qa-meta" style="padding:0 18px 14px 48px">
+        <span class="tag">Higgsfield</span>
+        <span class="tag">Image to Video</span>
+        <span class="tag">圖生影片</span>
+        <span class="date">2026-07-03</span>
+      </div>
+      <div class="qa-b">
+        <h4>用途</h4>
+        <p>手上已經有一張滿意的圖，想讓它<b>動起來</b>變成影片（鏡頭運動、人物/物件動作）。作法是把這張圖當作<b>起始影格</b>，再用 prompt 描述要怎麼動。</p>
+
+        <h4>步驟</h4>
+        <ol class="steps">
+          <li>
+            <div class="st-t">準備好要當<b>起始圖</b>的圖片（構圖、主體都確定的那張）。</div>
+            <figure class="shot">
+              <img src="教學圖/問答紀錄/v1-1.png" alt="起始圖" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="ph" style="display:none">放圖片：起始圖<br><code>教學圖/問答紀錄/v2-1.png</code></div>
+            </figure>
+          </li>
+          <li>
+            <div class="st-t">輸入動作描述</div>
+            <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>不斷地由右至左水平旋轉</div>
+          </li>
+        </ol>
+        <h4>成果對照</h4>
+
+        <div class="vpair" style="display:flex;gap:14px;flex-wrap:wrap">
+          <figure class="shot" style="flex:1;min-width:220px;max-width:360px">
+            <img src="教學圖/問答紀錄/v1-2.png" alt="起始圖" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="ph" style="display:none">放圖片：起始圖<br><code>教學圖/問答紀錄/v2-1.png</code></div>
+            <figcaption>起始圖</figcaption>
+          </figure>
+          <figure class="shot" style="flex:1;min-width:220px;max-width:360px">
+            <video class="vid" controls preload="metadata" src="教學圖/問答紀錄/v2-1.mp4"></video>
+            <figcaption>生成影片</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+    <!-- ===== /Image to Video 圖片變影片 ===== -->
+
+  </div>
+
+  <div class="empty" id="empty">找不到符合的問答，換個關鍵字看看。</div>
+</div>
+
+<script>
+// 複製 prompt
+function copyPrompt(btn){
+  var text=btn.parentElement.textContent.replace(/^複製/,"").trim();
+  navigator.clipboard.writeText(text).then(function(){
+    var old=btn.textContent; btn.textContent="已複製 ✓";
+    setTimeout(function(){btn.textContent=old;},1200);
+  });
+}
+
+// 展開／收合（兩個清單共用）
+document.querySelector(".wrap").addEventListener("click",function(e){
+  var h=e.target.closest(".qa-h");
+  if(!h) return;
+  var open=h.classList.toggle("open");
+  h.parentElement.querySelector(".qa-b").classList.toggle("open",open);
+});
+
+var input=document.getElementById("q");
+var tabs=document.getElementById("tabs");
+var countEl=document.getElementById("count");
+var emptyEl=document.getElementById("empty");
+var listImg=document.getElementById("list-img");
+var listVid=document.getElementById("list-vid");
+var nImg=document.getElementById("n-img");
+var nVid=document.getElementById("n-vid");
+var tab="img";
+
+function totals(){
+  nImg.textContent=listImg.querySelectorAll(".qa").length;
+  nVid.textContent=listVid.querySelectorAll(".qa").length;
+}
+function apply(){
+  var kw=input.value.trim().toLowerCase();
+  var active=(tab==="img")?listImg:listVid;
+  listImg.style.display=(tab==="img")?"":"none";
+  listVid.style.display=(tab==="vid")?"":"none";
+  var shown=0;
+  active.querySelectorAll(".qa").forEach(function(it){
+    var show=(kw==="")||(it.textContent.toLowerCase().indexOf(kw)>-1);
+    it.style.display=show?"":"none";
+    if(show) shown++;
+  });
+  countEl.textContent="共 "+shown+" 則";
+  emptyEl.style.display=shown?"none":"block";
+}
+input.addEventListener("input",apply);
+tabs.addEventListener("click",function(e){
+  var t=e.target.closest(".tab");
+  if(!t) return;
+  tabs.querySelectorAll(".tab").forEach(function(x){x.classList.remove("on");});
+  t.classList.add("on");
+  tab=t.getAttribute("data-tab");
+  apply();
+});
+totals();
+apply();
+</script>
+</body>
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影片模型評測｜Leonardo</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --tx:#e8eaf0; --tx2:#a8b0c0; --tx3:#7b8499;
+    --accent:#7c9cff; --accent2:#5ad1c4; --gold:#e8c14b;
+    --sidebar:248px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+    line-height:1.7;font-size:15px;}
+  .nav{position:sticky;top:0;z-index:30;background:rgba(15,17,21,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .nav .inner{max-width:1280px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .nav .brand{font-weight:700;font-size:15px;margin-right:10px;letter-spacing:.5px;}
+  .nav a{color:var(--tx2);text-decoration:none;font-size:14px;padding:7px 13px;border-radius:9px;border:1px solid transparent;transition:.15s;}
+  .nav a:hover{color:#fff;border-color:var(--line);}
+  .nav a.on{background:var(--accent);color:#0f1115;font-weight:700;}
+  .nav a.soon{color:var(--tx3);cursor:default;}
+  .nav a.soon::after{content:"即將推出";font-size:10px;margin-left:6px;color:var(--tx3);border:1px solid var(--line);border-radius:5px;padding:1px 5px;}
+  .layout{max-width:1280px;margin:0 auto;display:flex;align-items:flex-start;}
+  .side{width:var(--sidebar);flex:none;position:sticky;top:57px;align-self:flex-start;height:calc(100vh - 57px);overflow-y:auto;padding:22px 14px;border-right:1px solid var(--line);}
+  .side .lbl{color:var(--tx3);font-size:11px;letter-spacing:1px;padding:4px 12px;margin:10px 0 4px;}
+  .side a{display:flex;align-items:center;gap:10px;color:var(--tx2);text-decoration:none;font-size:14px;padding:8px 12px;border-radius:10px;transition:.15s;margin-bottom:2px;}
+  .side a:hover{background:var(--panel2);color:#fff;}
+  .side a.active{background:var(--accent);color:#0f1115;font-weight:700;}
+  .content{flex:1 1 auto;min-width:0;padding:30px 34px 100px;}
+  h1{font-size:27px;margin:0 0 6px;letter-spacing:.5px;}
+  .sub{color:var(--tx2);font-size:14px;margin-bottom:6px;}
+  section{margin:0 0 10px;padding-top:16px;}
+  section+section{border-top:1px solid var(--line);margin-top:34px;padding-top:34px;}
+  h2{font-size:21px;margin:0 0 14px;display:flex;align-items:center;gap:10px;scroll-margin-top:72px;}
+  h2 .ic{font-size:20px;}
+  h3.grp{font-size:15px;color:var(--accent2);margin:22px 0 8px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px;}
+  .card p{margin:6px 0;color:var(--tx2);}
+  .card ul{margin:8px 0;padding-left:20px;color:var(--tx2);}
+  .card li{margin:5px 0;}
+  b,strong{color:#fff;}
+  .prompt{position:relative;background:#0b0d12;border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin:8px 0;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:#cdd3e0;line-height:1.6;white-space:pre-wrap;}
+  .prompt .cp{position:absolute;top:10px;right:10px;background:var(--panel2);border:1px solid var(--line);color:var(--tx2);border-radius:7px;font-size:12px;padding:5px 11px;cursor:pointer;}
+  .prompt .cp:hover{border-color:var(--accent);background:var(--accent);color:#0f1115;}
+  .focus{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px;}
+  .focus span{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:2px 9px;color:var(--tx2);background:var(--panel2);}
+  table.rb{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px;margin:4px 0 6px;}
+  table.rb th,table.rb td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--line);}
+  table.rb th{background:var(--panel2);color:var(--tx2);font-size:12px;}
+  table.rb tr:last-child td{border-bottom:none;}
+  table.rb td.pt{color:var(--gold);font-weight:700;white-space:nowrap;}
+  /* accordion */
+  .acc{border:1px solid var(--line);border-radius:12px;margin:8px 0;overflow:hidden;background:var(--panel);}
+  .acc-h{width:100%;display:flex;align-items:center;gap:12px;padding:12px 16px;background:none;border:0;color:var(--tx);font-size:15px;cursor:pointer;text-align:left;font-family:inherit;}
+  .acc-h:hover{background:var(--panel2);}
+  .acc-h .rank{width:22px;height:22px;flex:none;display:inline-flex;align-items:center;justify-content:center;background:var(--panel2);border:1px solid var(--line);border-radius:6px;font-size:12px;color:var(--tx2);}
+  .acc-h .nm{font-weight:700;min-width:128px;}
+  .acc-h .prov{font-size:12px;color:var(--tx3);}
+  .acc-h .score{color:var(--gold);font-weight:700;font-size:17px;min-width:32px;margin-left:auto;}
+  .acc-h .score.sc-none{color:var(--tx3);font-size:15px;}
+  .acc-h .brk{color:var(--tx3);font-size:12px;}
+  .acc-h .chev{color:var(--tx3);transition:.15s;margin-left:10px;flex:none;}
+  .acc-h.open .chev{transform:rotate(90deg);color:var(--accent2);}
+  .acc-b{display:none;padding:8px 16px 16px;border-top:1px solid var(--line);}
+  .acc-b.open{display:block;}
+  .vpair{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  figure.v{margin:0;}
+  figure.v .tag{font-size:12.5px;color:var(--tx2);margin-bottom:6px;font-weight:600;}
+  .vid{width:100%;height:240px;background:#000;border:1px solid var(--line);border-radius:11px;display:block;}
+  .ph{width:100%;height:240px;border:1.5px dashed var(--line);border-radius:11px;background:var(--panel2);
+    display:flex;align-items:center;justify-content:center;text-align:center;color:var(--tx3);font-size:13px;padding:20px;}
+  .ph code{color:var(--accent);font-size:12px;}
+  @media(max-width:760px){.side{display:none;} .content{padding:24px 18px 80px;} .vpair{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="inner">
+    <span class="brand">AI 生成工具教學</span>
+    <a href="index.html">Leonardo 教學</a>
+    <a href="Leonardo選模型.html">圖片模型評測</a>
+    <a href="評測樣本.html">圖片評判標準與樣本</a>
+    <a class="soon">影片模型評測</a>
+    <a href="問答紀錄.html">問答紀錄</a>
+    <a class="soon">Higgsfield</a>
+  </div>
+</nav>
+<div class="layout">
+  <main class="content">
+  <h1>影片模型評測</h1>
+  <div class="sub">整理中，即將推出。</div>
+  <div class="card" style="margin-top:18px;text-align:center;padding:48px 20px;">
+    <div style="font-size:34px;margin-bottom:8px;">🎬</div>
+    <p style="color:var(--tx);font-size:16px;font-weight:700;margin:0 0 4px;">影片模型評測即將推出</p>
+    <p style="color:var(--tx3);font-size:13px;margin:0;">內容整理中，敬請期待。</p>
+  </div>
+  </main>
+  <!-- ===== 內容暫時隱藏（整理中），保留原始碼於下方註解 =====
+
+  <aside class="side">
+    <div class="lbl">內容</div>
+    <a href="#setup"><span>📏</span>測試設定</a>
+    <a href="#phase1">Phase 1 · 畫面品質</a>
+    <a href="#phase2">Phase 2 · 動作品質</a>
+  </aside>
+  <main class="content">
+  <h1>影片模型評測</h1>
+  <div class="sub">Leonardo 影片模型（去重後最新 10 款）的實測與評分。</div>
+
+  <section id="setup">
+    <h2><span class="ic">📏</span>測試設定</h2>
+    <div class="card">
+      <ul>
+        <li><b>受測模型（10 款）</b>：Motion 2.0（自家）、Veo 3.1、Gemini Omni Flash、Sora 2 Pro、Kling 3.0、Hailuo 2.3、Seedance 2.0、LTX-2.3 Pro、Grok Imagine 1.5、Happy Horse 1.1。</li>
+        <li><b>同一 prompt</b>，各模型每個測試各生成 1 支，設定盡量用預設。</li>
+        <li>比例 16:9；時長取各模型預設短版。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="phase1">
+    <h2><span class="ic">1️⃣</span>Phase 1 · 畫面品質（Visual Quality）</h2>
+
+    <h3 class="grp">Test 1 · 角色</h3>
+    <div class="card">
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>A female knight wearing highly detailed white armor with gold trims and a glowing blue crystal sword. Standing in an ancient temple. Cinematic lighting. Ultra detailed.</div>
+      <div class="focus"><span>人物細節</span><span>材質</span><span>光影</span><span>構圖</span></div>
+    </div>
+
+    <h3 class="grp">Test 2 · 場景</h3>
+    <div class="card">
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>A gigantic ancient city reclaimed by nature. Massive temples, waterfalls, giant trees, atmospheric fog. A lone traveler walking through the ruins. Cinematic composition.</div>
+      <div class="focus"><span>空間感</span><span>建築</span><span>光影</span></div>
+    </div>
+
+    <h3 class="grp">評分（滿分 100）</h3>
+    <table class="rb">
+      <thead><tr><th>項目</th><th>配分</th></tr></thead>
+      <tbody>
+        <tr><td>構圖</td><td class="pt">20</td></tr>
+        <tr><td>細節</td><td class="pt">20</td></tr>
+        <tr><td>美感</td><td class="pt">20</td></tr>
+        <tr><td>材質</td><td class="pt">15</td></tr>
+        <tr><td>光影</td><td class="pt">15</td></tr>
+        <tr><td>Artifact（瑕疵/穩定度）</td><td class="pt">10</td></tr>
+      </tbody>
+    </table>
+    <p class="sub">點模型展開它的 Test 1 / Test 2 影片；分數待實測後填入。</p>
+
+    <div class="acc">
+      <button class="acc-h" data-t="p1-motion">
+        <span class="rank">1</span>
+        <span class="nm">Motion 2.0</span>
+        <span class="prov">Leonardo 自家</span>
+        <span class="score">80</span>
+        <span class="brk">構15·細16·美15·材14·光13·瑕7</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-motion">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>免點；遊戲渲染感、材質不錯；角色偏中景非全身、場景較霧且少了旅人、動態偏小</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/motion-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/motion-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/motion-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/motion-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-veo">
+        <span class="rank">2</span>
+        <span class="nm">Veo 3.1</span>
+        <span class="prov">Google</span>
+        <span class="score">97</span>
+        <span class="brk">構18·細20·美19·材15·光15·瑕10</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-veo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>細節與材質最頂、構圖穩；角色戴盔非明顯女性</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/veo-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/veo-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/veo-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/veo-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-gemini">
+        <span class="rank">3</span>
+        <span class="nm">Gemini Omni Flash</span>
+        <span class="prov">Google</span>
+        <span class="score">80</span>
+        <span class="brk">構15·細16·美16·材13·光13·瑕7</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-gemini">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>又快又便宜；運鏡/構圖不穩（全身↔特寫跳）</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/gemini-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/gemini-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-sora">
+        <span class="rank">4</span>
+        <span class="nm">Sora 2 Pro</span>
+        <span class="prov">OpenAI</span>
+        <span class="score">95</span>
+        <span class="brk">構19·細18·美20·材14·光15·瑕9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-sora">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>清楚女騎士＋史詩場景、美感最高；略偏亮</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/sora-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/sora-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/sora-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/sora-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-kling">
+        <span class="rank">5</span>
+        <span class="nm">Kling 3.0</span>
+        <span class="prov">Kuaishou</span>
+        <span class="score">87</span>
+        <span class="brk">構18·細16·美17·材13·光14·瑕9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-kling">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>構圖強、乾淨；角色較平、盔甲中性</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/kling-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/kling-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/kling-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/kling-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-hailuo">
+        <span class="rank">6</span>
+        <span class="nm">Hailuo 2.3</span>
+        <span class="prov">MiniMax</span>
+        <span class="score">77</span>
+        <span class="brk">構16·細14·美14·材12·光12·瑕9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-hailuo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>免點、完整全身；偏柔偏糊、對比低</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/hailuo-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/hailuo-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/hailuo-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/hailuo-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-seedance">
+        <span class="rank">7</span>
+        <span class="nm">Seedance 2.0</span>
+        <span class="prov">ByteDance</span>
+        <span class="score">84</span>
+        <span class="brk">構16·細17·美17·材13·光14·瑕7</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-seedance">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>美感高、氣勢足；角色結尾變特寫、場景空拍少了旅人</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/seedance-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/seedance-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/seedance-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/seedance-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-ltx">
+        <span class="rank">8</span>
+        <span class="nm">LTX-2.3 Pro</span>
+        <span class="prov">Lightricks</span>
+        <span class="score">79</span>
+        <span class="brk">構15·細16·美15·材13·光13·瑕7</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-ltx">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>1080p 銳利；角色偏緊身衣非鎧甲、末段人形略變形</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/ltx-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/ltx-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/ltx-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/ltx-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-grok">
+        <span class="rank">9</span>
+        <span class="nm">Grok Imagine 1.5</span>
+        <span class="prov">xAI</span>
+        <span class="score sc-none">—</span>
+        <span class="brk">圖生影片，需起始圖，未做文字測試</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-grok">
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/grok-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/grok-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/grok-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/grok-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-happyhorse">
+        <span class="rank">10</span>
+        <span class="nm">Happy Horse 1.1</span>
+        <span class="prov">Happy Horse</span>
+        <span class="score">87</span>
+        <span class="brk">構17·細16·美17·材14·光14·瑕9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-happyhorse">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>角色/場景都精緻、光影佳、旅人有走動；角色結尾飄成特寫、偏遊戲 CG 風</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="phase2">
+    <h2><span class="ic">2️⃣</span>Phase 2 · 動作品質（Motion Quality）</h2>
+    <div class="card">
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>A female knight slowly walks forward, draws her sword, raises it, then performs a smooth horizontal slash. Her cape and hair flow naturally in the wind.</div>
+      <p class="sub" style="margin:8px 0 0">評估重點：動作是否自然、重心是否合理、手部是否扭曲、頭髮是否自然、披風是否自然、武器是否跟著動。</p>
+      <div class="focus"><span>動作自然</span><span>重心合理</span><span>手部不扭曲</span><span>頭髮自然</span><span>披風自然</span><span>武器跟動</span></div>
+    </div>
+    <h3 class="grp">評分（滿分 100）</h3>
+    <table class="rb">
+      <thead><tr><th>項目</th><th>配分</th></tr></thead>
+      <tbody>
+        <tr><td>動作流暢</td><td class="pt">25</td></tr>
+        <tr><td>人體合理</td><td class="pt">20</td></tr>
+        <tr><td>布料模擬（頭髮/披風）</td><td class="pt">20</td></tr>
+        <tr><td>武器一致</td><td class="pt">15</td></tr>
+        <tr><td>表情自然</td><td class="pt">10</td></tr>
+        <tr><td>Artifact（瑕疵/穩定度）</td><td class="pt">10</td></tr>
+      </tbody>
+    </table>
+    <p class="sub">單一動作 prompt，9 個文生影片模型各 1 支（Grok 需起始圖，不列）。點模型展開影片。以下依動作品質總分排序。</p>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-veo">
+        <span class="rank">1</span>
+        <span class="nm">Veo 3.1</span>
+        <span class="prov">Google</span>
+        <span class="score">95</span>
+        <span class="brk">動24·人19·布19·武15·表9·瑕9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-veo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>動作最完整清晰，拔劍→高舉→橫斬一氣呵成；劍刃銳利、披風自然，動作品質第一</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/veo-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/veo-p2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-sora">
+        <span class="rank">2</span>
+        <span class="nm">Sora 2 Pro</span>
+        <span class="prov">OpenAI</span>
+        <span class="score">92</span>
+        <span class="brk">動23·人18·布20·武14·表8·瑕9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-sora">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>披風飄動最自然、運鏡電影感強；缺點是鏡頭移動大、結尾人物偏小</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/sora-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/sora-p2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-kling">
+        <span class="rank">3</span>
+        <span class="nm">Kling 3.0</span>
+        <span class="prov">Kuaishou</span>
+        <span class="score">89</span>
+        <span class="brk">動22·人18·布18·武13·表9·瑕9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-kling">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>走位加揮劍流暢、臉部一致、盔甲細緻；橫斬帶自然動態模糊</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/kling-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/kling-p2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-happyhorse">
+        <span class="rank">8</span>
+        <span class="nm">Happy Horse 1.1</span>
+        <span class="prov">Happy Horse</span>
+        <span class="score">82</span>
+        <span class="brk">動20·人17·布18·武12·表8·瑕7</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-happyhorse">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>動作完整、披風飄動佳；但動作略僵硬、手/劍銜接處有小瑕疵</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-p2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-seedance">
+        <span class="rank">4</span>
+        <span class="nm">Seedance 2.0</span>
+        <span class="prov">ByteDance</span>
+        <span class="score">86</span>
+        <span class="brk">動19·人18·布19·武14·表8·瑕8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-seedance">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>畫面最頂級唯美、劍刃質感佳；但像多鏡頭剪接，單一動作連續性稍弱</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/seedance-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/seedance-p2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-gemini">
+        <span class="rank">5</span>
+        <span class="nm">Gemini Omni Flash</span>
+        <span class="prov">Google</span>
+        <span class="score">86</span>
+        <span class="brk">動21·人18·布18·武13·表8·瑕8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-gemini">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>動作完整、暴風天戲劇感強，構圖穩；動態略顯僵硬</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/gemini-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-p2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-motion">
+        <span class="rank">7</span>
+        <span class="nm">Motion 2.0</span>
+        <span class="prov">Leonardo 自家</span>
+        <span class="score">83</span>
+        <span class="brk">動20·人18·布18·武11·表8·瑕8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-motion">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>走位與抬手流暢自然、光影佳；但拔劍動作含蓄、武器不明顯</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/motion-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/motion-p2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-ltx">
+        <span class="rank">6</span>
+        <span class="nm">LTX-2.3 Pro</span>
+        <span class="prov">Lightricks</span>
+        <span class="score">84</span>
+        <span class="brk">動21·人17·布18·武12·表8·瑕8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-ltx">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>動作完整、披風飄逸、1080p 銳利；劍身偏細、動態略平</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/ltx-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/ltx-p2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-hailuo">
+        <span class="rank">9</span>
+        <span class="nm">Hailuo 2.3</span>
+        <span class="prov">MiniMax</span>
+        <span class="score">75</span>
+        <span class="brk">動16·人17·布16·武11·表7·瑕8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-hailuo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>人物遠且偏暗、以行走為主，拔劍與橫斬未明確執行，動作品質最弱</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/hailuo-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/hailuo-p2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+  ===== /隱藏區 ===== -->
+</div>
+<script>
+function copyPrompt(btn){
+  var t=btn.parentNode.textContent.replace(/^複製/,"").trim();
+  navigator.clipboard.writeText(t).then(function(){var o=btn.textContent;btn.textContent="已複製 ✓";setTimeout(function(){btn.textContent=o;},1400);});
+}
+document.querySelectorAll(".acc-h").forEach(function(h){
+  h.addEventListener("click",function(){
+    var b=document.getElementById(h.getAttribute("data-t"));
+    var open=h.classList.toggle("open"); if(b) b.classList.toggle("open",open);
+  });
+});
+var links=[].slice.call(document.querySelectorAll(".side a"));
+var map=links.map(function(a){return {a:a,sec:document.querySelector(a.getAttribute("href"))};}).filter(function(m){return m.sec;});
+var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){map.forEach(function(m){m.a.classList.toggle("active",m.sec===e.target);});}});},{rootMargin:"-40% 0px -55% 0px"});
+map.forEach(function(m){obs.observe(m.sec);});
+</script>
+</body>
+</html>

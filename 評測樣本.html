@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圖片評判標準與實測樣本｜Leonardo 圖片模型</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --tx:#e8eaf0; --tx2:#a8b0c0; --tx3:#7b8499;
+    --accent:#7c9cff; --accent2:#5ad1c4; --gold:#e8c14b;
+    --sidebar:248px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+    line-height:1.7;font-size:15px;}
+
+  .nav{position:sticky;top:0;z-index:30;background:rgba(15,17,21,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .nav .inner{max-width:1280px;margin:0 auto;padding:12px 20px;display:flex;
+    align-items:center;gap:8px;flex-wrap:wrap;}
+  .nav .brand{font-weight:700;font-size:15px;margin-right:10px;letter-spacing:.5px;}
+  .nav a{color:var(--tx2);text-decoration:none;font-size:14px;padding:7px 13px;
+    border-radius:9px;border:1px solid transparent;transition:.15s;}
+  .nav a:hover{color:#fff;border-color:var(--line);}
+  .nav a.on{background:var(--accent);color:#0f1115;font-weight:700;}
+  .nav a.soon{color:var(--tx3);cursor:default;}
+  .nav a.soon:hover{border-color:transparent;color:var(--tx3);}
+  .nav a.soon::after{content:"即將推出";font-size:10px;margin-left:6px;
+    color:var(--tx3);border:1px solid var(--line);border-radius:5px;padding:1px 5px;}
+
+  .layout{max-width:1280px;margin:0 auto;display:flex;align-items:flex-start;}
+  .side{width:var(--sidebar);flex:none;position:sticky;top:57px;align-self:flex-start;
+    height:calc(100vh - 57px);overflow-y:auto;padding:22px 14px;border-right:1px solid var(--line);}
+  .side .lbl{color:var(--tx3);font-size:11px;letter-spacing:1px;padding:4px 12px;margin:10px 0 4px;}
+  .side a{display:flex;align-items:center;gap:10px;color:var(--tx2);text-decoration:none;
+    font-size:14px;padding:8px 12px;border-radius:10px;transition:.15s;margin-bottom:2px;}
+  .side a:hover{background:var(--panel2);color:#fff;}
+  .side a.active{background:var(--accent);color:#0f1115;font-weight:700;}
+  .side a .n{margin-left:auto;font-size:11px;color:var(--tx3);}
+  .side a.active .n{color:#0f1115;}
+
+  .content{flex:1 1 auto;min-width:0;padding:30px 34px 100px;}
+  h1{font-size:27px;margin:0 0 6px;letter-spacing:.5px;}
+  .sub{color:var(--tx2);font-size:14px;margin-bottom:6px;}
+  section{margin:0 0 10px;padding-top:16px;}
+  section+section{border-top:1px solid var(--line);margin-top:34px;padding-top:34px;}
+  h2{font-size:21px;margin:0 0 14px;display:flex;align-items:center;gap:10px;scroll-margin-top:72px;}
+  h2 .ic{font-size:20px;}
+  h3.grp{font-size:15px;color:var(--accent2);margin:22px 0 8px;}
+  .mh{font-size:17px;margin:0 0 12px;scroll-margin-top:72px;display:flex;align-items:baseline;gap:10px;}
+  .mh .cnt{font-size:12px;color:var(--tx3);font-weight:400;}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px;}
+  .card p{margin:6px 0;color:var(--tx2);}
+  .card ul{margin:8px 0;padding-left:20px;color:var(--tx2);}
+  .card li{margin:5px 0;}
+  b,strong{color:#fff;}
+
+  table.rb{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;overflow:hidden;font-size:14px;margin:4px 0 6px;}
+  table.rb th,table.rb td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--line);}
+  table.rb th{background:var(--panel2);color:var(--tx2);font-size:12px;}
+  table.rb tr:last-child td{border-bottom:none;}
+  table.rb td.pt{color:var(--gold);font-weight:700;white-space:nowrap;}
+  .tip{border-left:3px solid var(--accent2);background:rgba(90,209,196,.06);border-radius:0 10px 10px 0;
+    padding:10px 14px;margin:10px 0;color:var(--tx2);font-size:13.5px;}
+  .tip b{color:var(--accent2);}
+
+  /* gallery */
+  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:6px 0 4px;}
+  figure.g{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    cursor:pointer;transition:.15s;}
+  figure.g:hover{border-color:var(--accent2);transform:translateY(-2px);}
+  figure.g img{width:100%;height:200px;object-fit:cover;display:block;background:var(--panel2);}
+  figure.g figcaption{padding:7px 9px;font-size:11.5px;color:var(--tx3);line-height:1.4;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+  /* accordion */
+  .acc{border:1px solid var(--line);border-radius:12px;margin:8px 0;overflow:hidden;background:var(--panel);}
+  .acc-h{width:100%;display:flex;align-items:center;gap:12px;padding:12px 16px;background:none;border:0;
+    color:var(--tx);font-size:15px;cursor:pointer;text-align:left;font-family:inherit;}
+  .acc-h:hover{background:var(--panel2);}
+  .acc-h[disabled]{opacity:.45;cursor:default;}
+  .acc-h .rank{width:22px;height:22px;flex:none;display:inline-flex;align-items:center;justify-content:center;
+    background:var(--panel2);border:1px solid var(--line);border-radius:6px;font-size:12px;color:var(--tx2);}
+  .acc-h .nm{font-weight:700;min-width:118px;}
+  .acc-h .score{color:var(--gold);font-weight:700;font-size:17px;min-width:32px;}
+  .acc-h .score.sc-none{color:var(--tx3);font-size:15px;}
+  .acc-h .cnt{color:var(--tx3);font-size:12px;}
+  .acc-h .brk{color:var(--tx3);font-size:12px;margin-left:auto;text-align:right;}
+  .acc-h .chev{color:var(--tx3);transition:.15s;margin-left:10px;flex:none;}
+  .acc-h.open .chev{transform:rotate(90deg);color:var(--accent2);}
+  .acc-b{display:none;padding:4px 16px 16px;border-top:1px solid var(--line);}
+  .acc-b.open{display:block;}
+  .acc-b .empty{color:var(--tx3);font-size:13px;padding:12px 0;}
+  @media(max-width:760px){.acc-h .brk{display:none;}}
+
+  /* lightbox */
+  .lb{position:fixed;inset:0;background:rgba(8,10,14,.9);display:none;align-items:center;justify-content:center;
+    z-index:60;padding:24px;}
+  .lb.on{display:flex;}
+  .lb img{max-width:92vw;max-height:82vh;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.5);}
+  .lb .cap{position:fixed;bottom:18px;left:0;right:0;text-align:center;color:var(--tx2);font-size:13px;padding:0 20px;}
+  .lb .x{position:fixed;top:18px;right:22px;color:#fff;background:var(--panel2);border:1px solid var(--line);
+    border-radius:8px;font-size:14px;padding:7px 13px;cursor:pointer;}
+  .lb .x:hover{border-color:var(--accent);background:var(--accent);color:#0f1115;}
+
+  @media(max-width:820px){ .side{display:none;} .content{padding:24px 18px 80px;} }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="inner">
+    <span class="brand">AI 生成工具教學</span>
+    <a href="index.html">Leonardo 教學</a>
+    <a href="Leonardo選模型.html">圖片模型評測</a>
+    <a class="on" href="評測樣本.html">圖片評判標準與樣本</a>
+    <a class="soon">影片模型評測</a>
+    <a href="問答紀錄.html">問答紀錄</a>
+    <a class="soon">Higgsfield</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside class="side">
+    <div class="lbl">內容</div>
+    <a href="#rubric"><span>📏</span>測試共同設定</a>
+    <a href="#phase1">Phase 1 · 原生品質</a>
+    <a href="#phase2">Phase 2 · 需求理解</a>
+    <a href="#phase3">Phase 3 · 風格套用</a>
+  </aside>
+
+  <main class="content">
+  <h1>圖片評判標準與實測樣本</h1>
+  <div class="sub">所有評分的量表、測試設定，以及 9 個模型共 172 張實測原圖。</div>
+
+  <!-- RUBRIC -->
+  <section id="rubric">
+    <h2><span class="ic">📏</span>測試共同設定</h2>
+
+    <div class="card">
+      <h3 class="grp">測試共同設定</h3>
+      <ul>
+        <li><b>Prompt Enhance = Off</b>（每換模型/重整都要重設，會 reset）。</li>
+        <li><b>Style = None</b>（僅 Phase 1／2；<b>Phase 3 例外</b>——它就是逐一套用每個 Style 來測）。沒有 Style 的模型用預設 Quality。</li>
+        <li><b>比例</b>：角色 2:3／場景 16:9／道具 1:1／商業 1:1（多主體題統一 16:9）。</li>
+        <li><b>原 prompt 不改動</b>；每組固定 1 張、不設點數上限。</li>
+      </ul>
+    </div>
+
+  </section>
+
+  <!-- PHASE 1 -->
+  <section id="phase1">
+    <h2><span class="ic">1️⃣</span>Phase 1 · 四類原生品質</h2>
+    <div class="card">
+      <p class="sub" style="margin-top:0">禁用 Style，用四個 prompt 測原生輸出。<b>點模型可展開它的四類圖</b>。</p>
+      <ul>
+        <li><b>角色</b>：Fantasy RPG character concept. A female warrior with a unique costume design. Full body.</li>
+        <li><b>場景</b>：Environment concept art. An ancient city covered by nature. Cinematic atmosphere.</li>
+        <li><b>道具</b>：Concept design of a legendary magical weapon. Unique shape and material.</li>
+        <li><b>商業</b>：A premium perfume advertisement. Minimal composition. Luxury feeling.</li>
+      </ul>
+    </div>
+    <h3 class="grp">① 原生品質 rubric（Phase 1，滿分 100）</h3>
+    <p class="sub">禁用 Style，用四類 prompt（角色／場景／道具／商業）的原生輸出綜合評分。</p>
+    <table class="rb">
+      <thead><tr><th>評分項</th><th>配分</th><th>看什麼</th></tr></thead>
+      <tbody>
+        <tr><td>構圖</td><td class="pt">20</td><td>取景、主體位置、畫面平衡</td></tr>
+        <tr><td>細節品質</td><td class="pt">20</td><td>解析度、清晰度、細節豐富度</td></tr>
+        <tr><td>美術品質</td><td class="pt">20</td><td>設計感、風格完成度</td></tr>
+        <tr><td>材質與光影</td><td class="pt">15</td><td>質感真實度、光線與陰影</td></tr>
+        <tr><td>主題完整度</td><td class="pt">15</td><td>有沒有把需求主體完整表達</td></tr>
+        <tr><td>整體完成度</td><td class="pt">10</td><td>可直接交付的程度</td></tr>
+      </tbody>
+    </table>
+
+    <div class="acc">
+      <button class="acc-h" data-t="p1-gpt">
+        <span class="rank">1</span>
+        <span class="nm">GPT Image 2</span>
+        <span class="score">95</span>
+        <span class="cnt">4 張</span>
+        <span class="brk">構18 · 細19 · 美20 · 材15 · 主13 · 完10</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-gpt">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_A_female_warrior_character_concept._Full_body.-0.jpg" alt="角色（以 Phase 3 基準圖代替）" title="角色（以 Phase 3 基準圖代替）"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_A_premium_perfume_advertisement__Minimal_composition__Luxury_feeling_-0_6106e169-a99e-4a5a-b6b4-be2042a356c9.jpg" alt="A premium perfume advertisement  Minimal composition  Luxury feeling" title="A premium perfume advertisement  Minimal composition  Luxury feeling"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_Concept_design_of_a_legendary_magical_weapon__Unique_shape_and_material_-0_164f4b1d-f102-4074-894b-78418140fe24.jpg" alt="Concept design of a legendary magical weapon  Unique shape and material" title="Concept design of a legendary magical weapon  Unique shape and material"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_Environment_concept_art__An_ancient_city_covered_by_nature__Cinematic_atmosphere-0_5ec1dddb-e45f-4167-b6f1-aa12b1bef39b.jpg" alt="Environment concept art  An ancient city covered by nature  Cinematic atmosphere" title="Environment concept art  An ancient city covered by nature  Cinematic atmosphere"></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-nano">
+        <span class="rank">2</span>
+        <span class="nm">Nano Banana</span>
+        <span class="score">94</span>
+        <span class="cnt">4 張</span>
+        <span class="brk">構18 · 細19 · 美18 · 材14 · 主15 · 完10</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-nano">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/gemini-image-2_A_premium_perfume_advertisement__Minimal_composition__Luxury_feeling_-0_338cf74a-4817-42b3-90e8-8ff3f7687598.jpg" alt="A premium perfume advertisement  Minimal composition  Luxury feeling" title="A premium perfume advertisement  Minimal composition  Luxury feeling"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gemini-image-2_Concept_design_of_a_legendary_magical_weapon__Unique_shape_and_material_-0_abac089b-d115-4e06-8067-b3e984070d31.jpg" alt="Concept design of a legendary magical weapon  Unique shape and material" title="Concept design of a legendary magical weapon  Unique shape and material"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gemini-image-2_Environment_concept_art__An_ancient_city_covered_by_nature__Cinematic_atmosphere-0_0b97b3c7-ba0c-44bc-9ce8-4e16ba35fea1.jpg" alt="Environment concept art  An ancient city covered by nature  Cinematic atmosphere" title="Environment concept art  An ancient city covered by nature  Cinematic atmosphere"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gemini-image-2_Fantasy_RPG_character_concept__A_female_warrior_with_a_unique_costume_design__Fu-0_4bb0e64b-65d2-41ce-b452-a069522ae1ad.jpg" alt="Fantasy RPG character concept  A female warrior with a unique costume design  Fu" title="Fantasy RPG character concept  A female warrior with a unique costume design  Fu"></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-recraft">
+        <span class="rank">3</span>
+        <span class="nm">Recraft V4 Pro</span>
+        <span class="score">91</span>
+        <span class="cnt">4 張</span>
+        <span class="brk">構17 · 細19 · 美17 · 材15 · 主14 · 完9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-recraft">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/recraft-v4-pro_A_premium_perfume_advertisement__Minimal_composition__Luxury_feeling_-0_a8848d33-bebe-4936-99e8-604dd1fecf3b.jpg" alt="A premium perfume advertisement  Minimal composition  Luxury feeling" title="A premium perfume advertisement  Minimal composition  Luxury feeling"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/recraft-v4-pro_Concept_design_of_a_legendary_magical_weapon__Unique_shape_and_material_-0_fb4b4e31-338a-40fc-a6ce-e95f809b348e.jpg" alt="Concept design of a legendary magical weapon  Unique shape and material" title="Concept design of a legendary magical weapon  Unique shape and material"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/recraft-v4-pro_Environment_concept_art__An_ancient_city_covered_by_nature__Cinematic_atmosphere-0_74746bb3-b090-46e1-b506-7839bf3187f5.jpg" alt="Environment concept art  An ancient city covered by nature  Cinematic atmosphere" title="Environment concept art  An ancient city covered by nature  Cinematic atmosphere"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/recraft-v4-pro_Fantasy_RPG_character_concept__A_female_warrior_with_a_unique_costume_design__Fu-0_900f1156-1d94-4e01-85dd-1aed428650c6.jpg" alt="Fantasy RPG character concept  A female warrior with a unique costume design  Fu" title="Fantasy RPG character concept  A female warrior with a unique costume design  Fu"></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-ideogram">
+        <span class="rank">4</span>
+        <span class="nm">Ideogram 4.0</span>
+        <span class="score">86</span>
+        <span class="cnt">4 張</span>
+        <span class="brk">構18 · 細16 · 美15 · 材13 · 主15 · 完9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-ideogram">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/ideogram-v4_0_A_premium_perfume_advertisement__Minimal_composition__Luxury_feeling_-0_94ccee62-5eaf-4a56-978e-b487407baee3.jpg" alt="A premium perfume advertisement  Minimal composition  Luxury feeling" title="A premium perfume advertisement  Minimal composition  Luxury feeling"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/ideogram-v4_0_Concept_design_of_a_legendary_magical_weapon__Unique_shape_and_material_-0_7e5aa8d4-dacd-44f3-822b-d2ac5c901660.jpg" alt="Concept design of a legendary magical weapon  Unique shape and material" title="Concept design of a legendary magical weapon  Unique shape and material"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/ideogram-v4_0_Fantasy_RPG_character_concept__A_female_warrior_with_a_unique_costume_design__Fu-0_72364f07-673e-45ff-8c5e-776284d04020.jpg" alt="Fantasy RPG character concept  A female warrior with a unique costume design  Fu" title="Fantasy RPG character concept  A female warrior with a unique costume design  Fu"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/ideogram-v4.0_Environment_concept_art._An_ancient_city_covered_by_nature._Cinematic_atmosphere-0.jpg" alt="Environment concept art. An ancient city covered by nature. Cinematic atmosphere" title="Environment concept art. An ancient city covered by nature. Cinematic atmosphere"></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-seedream">
+        <span class="rank">5</span>
+        <span class="nm">Seedream 4.5</span>
+        <span class="score">85</span>
+        <span class="cnt">4 張</span>
+        <span class="brk">構17 · 細16 · 美16 · 材12 · 主15 · 完9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-seedream">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_A_premium_perfume_advertisement__Minimal_composition__Luxury_feeling_-0_6863074e-78e8-473b-a8fe-e7e31b356710.jpg" alt="A premium perfume advertisement  Minimal composition  Luxury feeling" title="A premium perfume advertisement  Minimal composition  Luxury feeling"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_Concept_design_of_a_legendary_magical_weapon__Unique_shape_and_material_-0_5db7ae46-a0c3-4dda-9797-1a987b0c81ab.jpg" alt="Concept design of a legendary magical weapon  Unique shape and material" title="Concept design of a legendary magical weapon  Unique shape and material"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_Environment_concept_art__An_ancient_city_covered_by_nature__Cinematic_atmosphere-0_82cda160-8908-408e-9540-d231cd32e965.jpg" alt="Environment concept art  An ancient city covered by nature  Cinematic atmosphere" title="Environment concept art  An ancient city covered by nature  Cinematic atmosphere"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_Fantasy_RPG_character_concept__A_female_warrior_with_a_unique_costume_design__Fu-0_9d0bdd7b-0150-4418-a616-bf5117b2c6fd.jpg" alt="Fantasy RPG character concept  A female warrior with a unique costume design  Fu" title="Fantasy RPG character concept  A female warrior with a unique costume design  Fu"></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-flux">
+        <span class="rank">6</span>
+        <span class="nm">FLUX.2 Pro</span>
+        <span class="score">85</span>
+        <span class="cnt">4 張</span>
+        <span class="brk">構17 · 細18 · 美17 · 材14 · 主11 · 完8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-flux">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_A_premium_perfume_advertisement__Minimal_composition__Luxury_feeling_-0_c41e2c85-7dc3-448e-b4d4-4cb0d355cb36.jpg" alt="A premium perfume advertisement  Minimal composition  Luxury feeling" title="A premium perfume advertisement  Minimal composition  Luxury feeling"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_Concept_design_of_a_legendary_magical_weapon__Unique_shape_and_material_-0_b6954e33-4452-4621-bcb9-54566cb53891.jpg" alt="Concept design of a legendary magical weapon  Unique shape and material" title="Concept design of a legendary magical weapon  Unique shape and material"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_Environment_concept_art__An_ancient_city_covered_by_nature__Cinematic_atmosphere-0_821d7a88-8e7b-4128-a874-d1951f3832f3.jpg" alt="Environment concept art  An ancient city covered by nature  Cinematic atmosphere" title="Environment concept art  An ancient city covered by nature  Cinematic atmosphere"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_Fantasy_RPG_character_concept__A_female_warrior_with_a_unique_costume_design__Fu-0_cb8fc017-8d02-4afa-a073-2a8f306d76da.jpg" alt="Fantasy RPG character concept  A female warrior with a unique costume design  Fu" title="Fantasy RPG character concept  A female warrior with a unique costume design  Fu"></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-phoenix">
+        <span class="rank">7</span>
+        <span class="nm">Phoenix 1.0</span>
+        <span class="score">80</span>
+        <span class="cnt">4 張</span>
+        <span class="brk">構15 · 細16 · 美16 · 材13 · 主12 · 完8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-phoenix">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_A_premium_perfume_advertisement__Minimal_composition__Luxury_feeling_-0_9af482f8-23ae-4427-90c5-005da54ec9fd.jpg" alt="A premium perfume advertisement  Minimal composition  Luxury feeling" title="A premium perfume advertisement  Minimal composition  Luxury feeling"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_Concept_design_of_a_legendary_magical_weapon__Unique_shape_and_material_-0_31b0e9c9-8af0-4a7b-ba0a-86bfb3e05e38.jpg" alt="Concept design of a legendary magical weapon  Unique shape and material" title="Concept design of a legendary magical weapon  Unique shape and material"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_Environment_concept_art__An_ancient_city_covered_by_nature__Cinematic_atmosphere-0_81fd76c9-4e2f-40d4-8c91-b39d187efe93.jpg" alt="Environment concept art  An ancient city covered by nature  Cinematic atmosphere" title="Environment concept art  An ancient city covered by nature  Cinematic atmosphere"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_Fantasy_RPG_character_concept__A_female_warrior_with_a_unique_costume_design__Fu-0_857b338c-980c-4821-8962-ace2bbc9c740.jpg" alt="Fantasy RPG character concept  A female warrior with a unique costume design  Fu" title="Fantasy RPG character concept  A female warrior with a unique costume design  Fu"></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-lucid">
+        <span class="rank">8</span>
+        <span class="nm">Lucid Realism</span>
+        <span class="score">76</span>
+        <span class="cnt">4 張</span>
+        <span class="brk">構16 · 細15 · 美14 · 材12 · 主11 · 完8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-lucid">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-origin_A_female_warrior_character_concept__Full_body_-0_95a2e56d-622b-4de3-b591-8cef63d0ab43.jpg" alt="角色（以 Phase 3 基準圖代替）" title="角色（以 Phase 3 基準圖代替）"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_A_premium_perfume_advertisement__Minimal_composition__Luxury_feeling_-0_d3e790b4-f076-4e63-8471-035516157b64.jpg" alt="A premium perfume advertisement  Minimal composition  Luxury feeling" title="A premium perfume advertisement  Minimal composition  Luxury feeling"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_Concept_design_of_a_legendary_magical_weapon__Unique_shape_and_material_-0_cd3e7b6a-f91c-4917-acec-83df19410d65.jpg" alt="Concept design of a legendary magical weapon  Unique shape and material" title="Concept design of a legendary magical weapon  Unique shape and material"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_Environment_concept_art__An_ancient_city_covered_by_nature__Cinematic_atmosphere-0_70763e37-53c1-41a9-a761-454c07f668d9.jpg" alt="Environment concept art  An ancient city covered by nature  Cinematic atmosphere" title="Environment concept art  An ancient city covered by nature  Cinematic atmosphere"></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-kino">
+        <span class="rank">9</span>
+        <span class="nm">Cinematic Kino</span>
+        <span class="score">68</span>
+        <span class="cnt">4 張</span>
+        <span class="brk">構14 · 細12 · 美13 · 材11 · 主11 · 完7</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-kino">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_A_premium_perfume_advertisement__Minimal_composition__Luxury_feeling_-0_c67226ec-4b59-4648-8375-f01a4e15a007.jpg" alt="A premium perfume advertisement  Minimal composition  Luxury feeling" title="A premium perfume advertisement  Minimal composition  Luxury feeling"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_Concept_design_of_a_legendary_magical_weapon__Unique_shape_and_material_-0_26f46d5f-3b09-425a-bbe3-7cbf96cd7e26.jpg" alt="Concept design of a legendary magical weapon  Unique shape and material" title="Concept design of a legendary magical weapon  Unique shape and material"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_Environment_concept_art__An_ancient_city_covered_by_nature__Cinematic_atmosphere-0_dc2fc0f6-60ce-43f0-8dac-9e8ccb88308b.jpg" alt="Environment concept art  An ancient city covered by nature  Cinematic atmosphere" title="Environment concept art  An ancient city covered by nature  Cinematic atmosphere"></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_Fantasy_RPG_character_concept__A_female_warrior_with_a_unique_costume_design__Fu-0_6283edd4-19bb-4d71-accd-5c7c1d5007e7.jpg" alt="Fantasy RPG character concept  A female warrior with a unique costume design  Fu" title="Fantasy RPG character concept  A female warrior with a unique costume design  Fu"></figure>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE 2 -->
+  <section id="phase2">
+    <h2><span class="ic">2️⃣</span>Phase 2 · 複雜需求理解</h2>
+    <div class="card">
+      <p class="sub" style="margin-top:0">同一段多主體 prompt，分英文版與中文版各測一次，比較指令服從與空間關係理解。<b>點模型展開它的生成圖</b>。</p>
+      <p><b>英文版 prompt：</b>Three female warriors standing together. The warrior on the left wears white armor and carries a glowing blue crystal sword. The warrior in the middle wears black armor and carries a red spear. The warrior on the right wears green armor and carries a golden bow. A small fox is sitting beside the warrior in white armor. The fox is looking at the warrior in black armor. An ancient temple covered with vines is behind them. Sunlight enters from the left side. Fantasy character concept art. Full body.</p>
+      <p><b>中文版 prompt：</b>三位女戰士並肩而立。左側的戰士身穿白色鎧甲，手持一把閃耀著藍色光芒的水晶劍。中間的戰士身穿黑色鎧甲，手持一桿紅色長矛。右側的戰士身穿綠色鎧甲，手持一把金色弓箭。一隻小狐狸坐在身穿白色鎧甲的戰士身旁。小狐狸正注視著身穿黑色鎧甲的戰士。她們身後是一座藤蔓纏繞的古老神殿。陽光從左側照射進來。奇幻角色概念藝術。全身。</p>
+    </div>
+    <h3 class="grp">② 複雜需求理解 rubric（Phase 2，滿分 100）</h3>
+    <p class="sub">用一段多主體 prompt（三女戰士＋狐狸＋神殿＋光線）測指令服從與空間關係。</p>
+    <table class="rb">
+      <thead><tr><th>評分項</th><th>配分</th><th>看什麼</th></tr></thead>
+      <tbody>
+        <tr><td>A 位置正確性</td><td class="pt">20</td><td>三人左中右位置對不對</td></tr>
+        <tr><td>B 屬性綁定</td><td class="pt">30</td><td>甲色／武器等屬性有沒有綁對人</td></tr>
+        <tr><td>C 關係理解</td><td class="pt">20</td><td>狐狸位置＋視線等複合關係（全場分水嶺）</td></tr>
+        <tr><td>D 背景理解</td><td class="pt">15</td><td>藤蔓神殿等場景有沒有出現</td></tr>
+        <tr><td>E 光線理解</td><td class="pt">15</td><td>光源方向對不對（左側入光）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="acc">
+      <button class="acc-h" data-t="p2-gpt">
+        <span class="rank">1</span>
+        <span class="nm">GPT Image 2</span>
+        <span class="score">98</span>
+        <span class="cnt">2 張</span>
+        <span class="brk">A位置20 · B屬性30 · C關係18 · D背景15 · E光線15</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-gpt">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_Three_female_warriors_standing_together__The_warrior_on_the_left_wears_white_arm-0_8896c3a4-7690-4f16-9d67-18b7d29f17e2.jpg" alt="三女戰士（英文版）" title="三女戰士（英文版）"><figcaption>三女戰士（英文版）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2___________________________-0_7c76e092-9729-48a5-8423-1014fc5bbeb5.jpg" alt="三女戰士（中文版）" title="三女戰士（中文版）"><figcaption>三女戰士（中文版）</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-flux">
+        <span class="rank">2</span>
+        <span class="nm">FLUX.2 Pro</span>
+        <span class="score">95</span>
+        <span class="cnt">2 張</span>
+        <span class="brk">A位置20 · B屬性28 · C關係17 · D背景15 · E光線15</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-flux">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_Three_female_warriors_standing_together__The_warrior_on_the_left_wears_white_arm-0_c0633a19-50ba-429e-9fa2-8046ad9a840f.jpg" alt="三女戰士（英文版）" title="三女戰士（英文版）"><figcaption>三女戰士（英文版）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2.0_三位女戰士並肩而立。左側的戰士身穿白色鎧甲，手持一把-0.jpg" alt="三女戰士（中文版）" title="三女戰士（中文版）"><figcaption>三女戰士（中文版）</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-seedream">
+        <span class="rank">3</span>
+        <span class="nm">Seedream 4.5</span>
+        <span class="score">90</span>
+        <span class="cnt">2 張</span>
+        <span class="brk">A位置20 · B屬性30 · C關係10 · D背景15 · E光線15</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-seedream">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_Three_female_warriors_standing_together__The_warrior_on_the_left_wears_white_arm-0_78179b6b-ebaf-4e5b-aaf1-f3ccba39a994.jpg" alt="三女戰士（英文版）" title="三女戰士（英文版）"><figcaption>三女戰士（英文版）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5___________________________-0_c97d9e4a-2b0d-4789-8751-21dcb1bf95b1.jpg" alt="三女戰士（中文版）" title="三女戰士（中文版）"><figcaption>三女戰士（中文版）</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-nano">
+        <span class="rank">4</span>
+        <span class="nm">Nano Banana</span>
+        <span class="score">86</span>
+        <span class="cnt">2 張</span>
+        <span class="brk">A位置20 · B屬性26 · C關係10 · D背景15 · E光線15</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-nano">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/gemini-image-2_Three_female_warriors_standing_together__The_warrior_on_the_left_wears_white_arm-0_367a5126-f02c-41e4-97ca-ffeabe32c2ae.jpg" alt="三女戰士（英文版）" title="三女戰士（英文版）"><figcaption>三女戰士（英文版）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gemini-image-2___________________________-0_70c91b6d-b568-4ef7-88af-819e3581a15d.jpg" alt="三女戰士（中文版）" title="三女戰士（中文版）"><figcaption>三女戰士（中文版）</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-ideogram">
+        <span class="rank">5</span>
+        <span class="nm">Ideogram 4.0</span>
+        <span class="score">84</span>
+        <span class="cnt">2 張</span>
+        <span class="brk">A位置20 · B屬性27 · C關係10 · D背景15 · E光線12</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-ideogram">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/ideogram-v4_0_Three_female_warriors_standing_together__The_warrior_on_the_left_wears_white_arm-0_abeda598-fe0a-4b4a-a853-535cf76882ec.jpg" alt="三女戰士（英文版）" title="三女戰士（英文版）"><figcaption>三女戰士（英文版）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/ideogram-v4_0___________________________-0_b28e2be2-ebbe-44ed-812c-80c167b0e2d4.jpg" alt="三女戰士（中文版）" title="三女戰士（中文版）"><figcaption>三女戰士（中文版）</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-recraft">
+        <span class="rank">6</span>
+        <span class="nm">Recraft V4 Pro</span>
+        <span class="score">84</span>
+        <span class="cnt">2 張</span>
+        <span class="brk">A位置20 · B屬性29 · C關係10 · D背景15 · E光線10</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-recraft">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/recraft-v4-pro_Three_female_warriors_standing_together__The_warrior_on_the_left_wears_white_arm-0_60f37187-373e-4e94-b7ed-c044f842f046.jpg" alt="三女戰士（英文版）" title="三女戰士（英文版）"><figcaption>三女戰士（英文版）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/recraft-v4-pro___________________________-0_7a4c6e3b-ab1f-4af3-a7e7-2e8efe6719a9.jpg" alt="三女戰士（中文版）" title="三女戰士（中文版）"><figcaption>三女戰士（中文版）</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-lucid">
+        <span class="rank">7</span>
+        <span class="nm">Lucid Realism</span>
+        <span class="score">77</span>
+        <span class="cnt">2 張</span>
+        <span class="brk">A位置20 · B屬性27 · C關係5 · D背景15 · E光線10</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-lucid">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_Three_female_warriors_standing_together__The_warrior_on_the_left_wears_white_arm-0_1655f858-03d0-41f5-9abc-ba71f845c84a.jpg" alt="三女戰士（英文版）" title="三女戰士（英文版）"><figcaption>三女戰士（英文版）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_三位女戰士並肩而立。左側的戰士身穿白色鎧甲，手持一把-0.jpg" alt="三女戰士（中文版）— 崩成單一人像、未依指令" title="三女戰士（中文版）— 崩成單一人像、未依指令"><figcaption>三女戰士（中文版）— 崩成單一人像</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-phoenix">
+        <span class="rank">8</span>
+        <span class="nm">Phoenix 1.0</span>
+        <span class="score">75</span>
+        <span class="cnt">2 張</span>
+        <span class="brk">A位置18 · B屬性27 · C關係5 · D背景15 · E光線10</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-phoenix">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_Three_female_warriors_standing_together__The_warrior_on_the_left_wears_white_arm-0_d76e425a-6bf1-4a81-91a6-144f2fb91620.jpg" alt="三女戰士（英文版）" title="三女戰士（英文版）"><figcaption>三女戰士（英文版）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0___________________________-0_03c59bcd-1827-4f93-b870-8749ac6bede1.jpg" alt="三女戰士（中文版）" title="三女戰士（中文版）"><figcaption>三女戰士（中文版）</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p2-kino">
+        <span class="rank">9</span>
+        <span class="nm">Cinematic Kino</span>
+        <span class="score">35</span>
+        <span class="cnt">2 張</span>
+        <span class="brk">A位置3 · B屬性10 · C關係0 · D背景13 · E光線9</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-kino">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_Three_female_warriors_standing_together__The_warrior_on_the_left_wears_white_arm-0_e1644e6a-7553-4099-9396-77a5d940e364.jpg" alt="三女戰士（英文版）" title="三女戰士（英文版）"><figcaption>三女戰士（英文版）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl___________________________-0_ce4cd273-2cea-4f71-8760-d1d63e388811.jpg" alt="三女戰士（中文版）" title="三女戰士（中文版）"><figcaption>三女戰士（中文版）</figcaption></figure>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE 3 -->
+  <section id="phase3">
+    <h2><span class="ic">3️⃣</span>Phase 3 · 風格套用</h2>
+    <div class="card">
+      <p class="sub" style="margin-top:0">固定 prompt「A female warrior character concept. Full body.」× 每個模型的所有 Style。<b>點模型展開它的全 style 圖</b>。各 style 分數在「評判標準」的量表。（Recraft／Ideogram 無 Style 選項，不列）</p>
+    </div>
+    <h3 class="grp">③ 風格套用 rubric（Phase 3，滿分 100）</h3>
+    <p class="sub">固定 prompt「A female warrior character concept. Full body.」× 每個模型的所有 Style。</p>
+    <table class="rb">
+      <thead><tr><th>評分項</th><th>配分</th><th>看什麼</th></tr></thead>
+      <tbody>
+        <tr><td>Style 識別度</td><td class="pt">35</td><td>風格有沒有真的套上（印記強弱）</td></tr>
+        <tr><td>Prompt 保留度</td><td class="pt">30</td><td>有沒有維持「女戰士全身」</td></tr>
+        <tr><td>Style 與 Prompt 協調</td><td class="pt">20</td><td>風格有沒有破壞需求（特寫／去色）</td></tr>
+        <tr><td>品質提升</td><td class="pt">15</td><td>完成度加分</td></tr>
+      </tbody>
+    </table>
+    <div class="tip"><b>失分規律</b>：協調扣最兇＝特寫破「全身」或黑白去色；保留扣＝裁半身或主體偏離；識別扣＝印記淡跟沒套差不多。</div>
+
+    <div class="acc">
+      <button class="acc-h" data-t="p3-nano">
+        <span class="rank">1</span>
+        <span class="nm">Nano Banana</span>
+        <span class="score sc-none">—</span>
+        <span class="cnt">18 張</span>
+        <span class="brk">Game Concept / Graphic Design 2D / Watercolor 99 — 品質天花板</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-nano">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_A_cinematic_portrait_photograph_of_A_female_warrior_character_concept__Full_body-0_9fc1ccdb-bc03-4514-ab24-7e71f639956e.jpg" alt="A cinematic portrait photograph of A female warrior character concept  Full body" title="A cinematic portrait photograph of A female warrior character concept  Full body"><figcaption class="stlab">Cinematic Portrait 電影人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_A_female_warrior_character_concept__Full_body_-0_301efbad-979a-42a4-9b7b-f576f3cb61e8.jpg" alt="A female warrior character concept  Full body" title="A female warrior character concept  Full body"><figcaption class="stlab">無風格（原圖）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_Fashion_portrait_photography_of_A_female_warrior_character_concept__Full_body__f-0_fb3c3f0b-0293-49be-ad93-a0dca38f2a35.jpg" alt="Fashion portrait photography of A female warrior character concept  Full body  f" title="Fashion portrait photography of A female warrior character concept  Full body  f"><figcaption class="stlab">Fashion Portrait 時尚人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_Professional_graphic_design_2D_illustration_A_female_warrior_character_concept__-0_60aa589b-19b5-419c-9ddb-77afebad3093.jpg" alt="Professional graphic design 2D illustration A female warrior character concept" title="Professional graphic design 2D illustration A female warrior character concept"><figcaption class="stlab">Graphic Design 2D 平面2D</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_Professional_graphic_design_3D_render_A_female_warrior_character_concept__Full_b-0_48dd3368-aa7f-4ecb-bc39-bbda8c179f79.jpg" alt="Professional graphic design 3D render A female warrior character concept  Full b" title="Professional graphic design 3D render A female warrior character concept  Full b"><figcaption class="stlab">Graphic Design 3D 平面3D</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_a_lush_3d_render_of_A_female_warrior_character_concept__Full_body__3D_model_exci-0_69ddf01a-31b0-4cfe-b71e-f3a99b6e87c2.jpg" alt="a lush 3d render of A female warrior character concept  Full body  3D model exci" title="a lush 3d render of A female warrior character concept  Full body  3D model exci"><figcaption class="stlab">3D Render 立體渲染</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_a_stunning_illustration_of_A_female_warrior_character_concept__Full_body__best_q-0_16dcfcdb-3141-4e19-ac45-5bff882f09b7.jpg" alt="a stunning illustration of A female warrior character concept  Full body  best q" title="a stunning illustration of A female warrior character concept  Full body  best q"><figcaption class="stlab">Illustration 插畫</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_a_surreal_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Ful-0_342cb408-18c6-464f-8ca4-871a3ed7113c.jpg" alt="a surreal and vibrant cinematic photo of A female warrior character concept  Ful" title="a surreal and vibrant cinematic photo of A female warrior character concept  Ful"><figcaption class="stlab">Surreal Cinematic 超現實電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_a_surreal_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Ful-0_c4d618b4-cca7-461c-afe5-a9b19b0910e7.jpg" alt="a surreal and vibrant cinematic photo of A female warrior character concept  Ful" title="a surreal and vibrant cinematic photo of A female warrior character concept  Ful"><figcaption class="stlab">Surreal Cinematic 超現實電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_artistic_portrait_photography_of_A_female_warrior_character_concept__Full_body__-0_937dbaec-7630-42cb-97c7-3706dc58bb79.jpg" alt="artistic portrait photography of A female warrior character concept  Full body" title="artistic portrait photography of A female warrior character concept  Full body"><figcaption class="stlab">Artistic Portrait 藝術人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_bold_acrylic_painting_A_female_warrior_character_concept__Full_body__vibrant_col-0_a3aa60f6-e67d-4051-8009-e17c253d7bbc.jpg" alt="bold acrylic painting A female warrior character concept  Full body  vibrant col" title="bold acrylic painting A female warrior character concept  Full body  vibrant col"><figcaption class="stlab">Acrylic 壓克力</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_concept_design_sheet_1_4_concept_art_A_female_warrior_character_concept__Full_bo-0_c4be0733-f75f-4cc0-8fcc-53c1073b2044.jpg" alt="concept design sheet 1 4 concept art A female warrior character concept  Full bo" title="concept design sheet 1 4 concept art A female warrior character concept  Full bo"><figcaption class="stlab">Concept Sheet 概念設定表</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_cross_processing_vintage_film_photography_of_A_female_warrior_character_concept_-0_af929162-f308-4ac1-a961-2e3cf2d55d97.jpg" alt="cross processing vintage film photography of A female warrior character concept" title="cross processing vintage film photography of A female warrior character concept"><figcaption class="stlab">Vintage Film 復古底片</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_delicate_watercolor_painting_A_female_warrior_character_concept__Full_body__tran-0_6f3483cf-965b-4751-bac5-4c2bdb3e27ea.jpg" alt="delicate watercolor painting A female warrior character concept  Full body  tran" title="delicate watercolor painting A female warrior character concept  Full body  tran"><figcaption class="stlab">Watercolor 水彩</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_exquisite_high_fashion_photography_of_A_female_warrior_character_concept__Full_b-0_305c6e8f-d49a-4502-90bf-b392d9342a49.jpg" alt="exquisite high fashion photography of A female warrior character concept  Full b" title="exquisite high fashion photography of A female warrior character concept  Full b"><figcaption class="stlab">High Fashion 高級時尚</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_photography_of_A_female_warrior_character_concept__Full_body__candid_photography-0_e78320d8-9ea5-4037-8b04-b871b7f6bc0d.jpg" alt="photography of A female warrior character concept  Full body  candid photography" title="photography of A female warrior character concept  Full body  candid photography"><figcaption class="stlab">Candid 街拍</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_professional_black_and_white_photography_of_A_female_warrior_character_concept__-0_de1abbff-4bbc-49f5-ad8c-8f2bf09181a8.jpg" alt="professional black and white photography of A female warrior character concept" title="professional black and white photography of A female warrior character concept"><figcaption class="stlab">Black & White 黑白</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/nano-banana-2_professional_photo_of_A_female_warrior_character_concept__Full_body__photography-0_64da3304-8660-4186-9b96-0112411de9ef.jpg" alt="professional photo of A female warrior character concept  Full body  photography" title="professional photo of A female warrior character concept  Full body  photography"><figcaption class="stlab">Photography 寫實攝影</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-gpt">
+        <span class="rank">2</span>
+        <span class="nm">GPT Image 2</span>
+        <span class="score sc-none">—</span>
+        <span class="cnt">18 張</span>
+        <span class="brk">Game Concept 99、Acrylic·Watercolor 98 — 全部保留完整全身</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-gpt">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_A_cinematic_portrait_photograph_of_A_female_warrior_character_concept__Full_body-0_36a91494-2502-43fa-8c77-1b6a9b718d97.jpg" alt="A cinematic portrait photograph of A female warrior character concept  Full body" title="A cinematic portrait photograph of A female warrior character concept  Full body"><figcaption class="stlab">Cinematic Portrait 電影人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_A_female_warrior_character_concept._Full_body.-0.jpg" alt="A female warrior character concept. Full body." title="A female warrior character concept. Full body."><figcaption class="stlab">無風格（原圖）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_A_stunning_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Fu-0_af227575-cbc3-4d1b-8626-55d6c1642b54.jpg" alt="A stunning and vibrant cinematic photo of A female warrior character concept  Fu" title="A stunning and vibrant cinematic photo of A female warrior character concept  Fu"><figcaption class="stlab">Vibrant Cinematic 鮮豔電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_Fashion_portrait_photography_of_A_female_warrior_character_concept__Full_body__f-0_74ea862c-5b3d-4554-8cd5-d5994ba42ae0.jpg" alt="Fashion portrait photography of A female warrior character concept  Full body  f" title="Fashion portrait photography of A female warrior character concept  Full body  f"><figcaption class="stlab">Fashion Portrait 時尚人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_Professional_graphic_design_2D_illustration_A_female_warrior_character_concept__-0_92c60ad3-cf11-4ca5-a42a-a8d6a409b39e.jpg" alt="Professional graphic design 2D illustration A female warrior character concept" title="Professional graphic design 2D illustration A female warrior character concept"><figcaption class="stlab">Graphic Design 2D 平面2D</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_Professional_graphic_design_3D_render_A_female_warrior_character_concept__Full_b-0_bc5696d8-5821-446d-ba4c-94ae7813f624.jpg" alt="Professional graphic design 3D render A female warrior character concept  Full b" title="Professional graphic design 3D render A female warrior character concept  Full b"><figcaption class="stlab">Graphic Design 3D 平面3D</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_a_cinematic_photo_of_A_female_warrior_character_concept__Full_body__photography-0_f5fc6c9a-2184-45d0-aab3-b3cee036667c.jpg" alt="a cinematic photo of A female warrior character concept  Full body  photography" title="a cinematic photo of A female warrior character concept  Full body  photography"><figcaption class="stlab">Cinematic Photo 電影攝影</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_a_lush_3d_render_of_A_female_warrior_character_concept__Full_body__3D_model_exci-0_05943937-1f84-4085-92cc-02a2be26ccec.jpg" alt="a lush 3d render of A female warrior character concept  Full body  3D model exci" title="a lush 3d render of A female warrior character concept  Full body  3D model exci"><figcaption class="stlab">3D Render 立體渲染</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_a_surreal_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Ful-0_5b4eebbf-7cd7-4e32-b093-15e7886a0e84.jpg" alt="a surreal and vibrant cinematic photo of A female warrior character concept  Ful" title="a surreal and vibrant cinematic photo of A female warrior character concept  Ful"><figcaption class="stlab">Surreal Cinematic 超現實電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_artistic_portrait_photography_of_A_female_warrior_character_concept__Full_body__-0_1326945f-cfdb-4dfa-b970-506b9b701db6.jpg" alt="artistic portrait photography of A female warrior character concept  Full body" title="artistic portrait photography of A female warrior character concept  Full body"><figcaption class="stlab">Artistic Portrait 藝術人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_artistic_portrait_photography_of_A_female_warrior_character_concept__Full_body__-0_1904b765-6dca-48e1-b917-755f9769ac4e.jpg" alt="artistic portrait photography of A female warrior character concept  Full body" title="artistic portrait photography of A female warrior character concept  Full body"><figcaption class="stlab">Artistic Portrait 藝術人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_bold_acrylic_painting_A_female_warrior_character_concept__Full_body__vibrant_col-0_5820fa70-a224-400b-999f-95788f6e88f9.jpg" alt="bold acrylic painting A female warrior character concept  Full body  vibrant col" title="bold acrylic painting A female warrior character concept  Full body  vibrant col"><figcaption class="stlab">Acrylic 壓克力</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_concept_design_sheet_1_4_concept_art_A_female_warrior_character_concept__Full_bo-0_37dc9045-10b8-4ee4-be35-d12a2b62388c.jpg" alt="concept design sheet 1 4 concept art A female warrior character concept  Full bo" title="concept design sheet 1 4 concept art A female warrior character concept  Full bo"><figcaption class="stlab">Concept Sheet 概念設定表</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_cross_processing_vintage_film_photography_of_A_female_warrior_character_concept_-0_5aa22c97-9029-4aaf-9b84-4e89f31e98ab.jpg" alt="cross processing vintage film photography of A female warrior character concept" title="cross processing vintage film photography of A female warrior character concept"><figcaption class="stlab">Vintage Film 復古底片</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_delicate_watercolor_painting_A_female_warrior_character_concept__Full_body__tran-0_4f475cdb-1a1c-428f-ba5a-b5384499c9d6.jpg" alt="delicate watercolor painting A female warrior character concept  Full body  tran" title="delicate watercolor painting A female warrior character concept  Full body  tran"><figcaption class="stlab">Watercolor 水彩</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_photography_of_A_female_warrior_character_concept__Full_body__candid_photography-0_6e3dde79-089f-4d85-a5ac-365db496d8cb.jpg" alt="photography of A female warrior character concept  Full body  candid photography" title="photography of A female warrior character concept  Full body  candid photography"><figcaption class="stlab">Candid 街拍</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_professional_black_and_white_photography_of_A_female_warrior_character_concept__-0_f5d52dcd-a176-4b74-ba70-ca42796a00b9.jpg" alt="professional black and white photography of A female warrior character concept" title="professional black and white photography of A female warrior character concept"><figcaption class="stlab">Black & White 黑白</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/gpt-image-2_professional_photo_of_A_female_warrior_character_concept__Full_body__photography-0_7c3a3bfb-ceb5-49b8-bd1d-d4a3e4da7546.jpg" alt="professional photo of A female warrior character concept  Full body  photography" title="professional photo of A female warrior character concept  Full body  photography"><figcaption class="stlab">Photography 寫實攝影</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-flux">
+        <span class="rank">3</span>
+        <span class="nm">FLUX.2 Pro</span>
+        <span class="score sc-none">—</span>
+        <span class="cnt">17 張</span>
+        <span class="brk">Game Concept 99、Acrylic·Watercolor 98 — 美術上限最強、無破框</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-flux">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_A_cinematic_portrait_photograph_of_A_female_warrior_character_concept__Full_body-0_f1f89a24-1eff-4e74-9716-4e4639a8a7fc.jpg" alt="A cinematic portrait photograph of A female warrior character concept  Full body" title="A cinematic portrait photograph of A female warrior character concept  Full body"><figcaption class="stlab">Cinematic Portrait 電影人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_A_female_warrior_character_concept__Full_body_-0_87054eb5-27c6-4a60-bcac-fdca5e3578cc.jpg" alt="A female warrior character concept  Full body" title="A female warrior character concept  Full body"><figcaption class="stlab">無風格（原圖）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_Fashion_portrait_photography_of_A_female_warrior_character_concept__Full_body__f-0_45274139-67dd-470d-9a24-234111b1f45a.jpg" alt="Fashion portrait photography of A female warrior character concept  Full body  f" title="Fashion portrait photography of A female warrior character concept  Full body  f"><figcaption class="stlab">Fashion Portrait 時尚人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_Professional_graphic_design_2D_illustration_A_female_warrior_character_concept__-0_0bddb1ce-56f0-4c5b-9567-b1fbd5f4a2bd.jpg" alt="Professional graphic design 2D illustration A female warrior character concept" title="Professional graphic design 2D illustration A female warrior character concept"><figcaption class="stlab">Graphic Design 2D 平面2D</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_Professional_graphic_design_3D_render_A_female_warrior_character_concept__Full_b-0_db0fdf53-56f2-45ee-84a7-6dae141371d4.jpg" alt="Professional graphic design 3D render A female warrior character concept  Full b" title="Professional graphic design 3D render A female warrior character concept  Full b"><figcaption class="stlab">Graphic Design 3D 平面3D</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_a_lush_3d_render_of_A_female_warrior_character_concept__Full_body__3D_model_exci-0_666f39e4-7fd7-46bf-acfa-fcdf5cfd766a.jpg" alt="a lush 3d render of A female warrior character concept  Full body  3D model exci" title="a lush 3d render of A female warrior character concept  Full body  3D model exci"><figcaption class="stlab">3D Render 立體渲染</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_a_stunning_illustration_of_A_female_warrior_character_concept__Full_body__best_q-0_6a5c4851-eb62-4623-adad-ec7afda933f8.jpg" alt="a stunning illustration of A female warrior character concept  Full body  best q" title="a stunning illustration of A female warrior character concept  Full body  best q"><figcaption class="stlab">Illustration 插畫</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_a_surreal_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Ful-0_39261cce-bb60-415f-aa24-ad715f8e3713.jpg" alt="a surreal and vibrant cinematic photo of A female warrior character concept  Ful" title="a surreal and vibrant cinematic photo of A female warrior character concept  Ful"><figcaption class="stlab">Surreal Cinematic 超現實電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_artistic_portrait_photography_of_A_female_warrior_character_concept__Full_body__-0_bc8b3338-cbb5-4efc-ad1a-2df913327f43.jpg" alt="artistic portrait photography of A female warrior character concept  Full body" title="artistic portrait photography of A female warrior character concept  Full body"><figcaption class="stlab">Artistic Portrait 藝術人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_bold_acrylic_painting_A_female_warrior_character_concept__Full_body__vibrant_col-0_59fce206-6064-4de1-b9d8-75ea59cc4bb8.jpg" alt="bold acrylic painting A female warrior character concept  Full body  vibrant col" title="bold acrylic painting A female warrior character concept  Full body  vibrant col"><figcaption class="stlab">Acrylic 壓克力</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_concept_design_sheet_1_4_concept_art_A_female_warrior_character_concept__Full_bo-0_a564cb73-cb23-4348-af06-3f4eadd395d6.jpg" alt="concept design sheet 1 4 concept art A female warrior character concept  Full bo" title="concept design sheet 1 4 concept art A female warrior character concept  Full bo"><figcaption class="stlab">Concept Sheet 概念設定表</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_cross_processing_vintage_film_photography_of_A_female_warrior_character_concept_-0_5b130d2c-ff2a-4006-b0b1-318f358af168.jpg" alt="cross processing vintage film photography of A female warrior character concept" title="cross processing vintage film photography of A female warrior character concept"><figcaption class="stlab">Vintage Film 復古底片</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_delicate_watercolor_painting_A_female_warrior_character_concept__Full_body__tran-0_ffe1a38c-50db-48b3-8363-dfe347526ec4.jpg" alt="delicate watercolor painting A female warrior character concept  Full body  tran" title="delicate watercolor painting A female warrior character concept  Full body  tran"><figcaption class="stlab">Watercolor 水彩</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_exquisite_high_fashion_photography_of_A_female_warrior_character_concept__Full_b-0_9d754f85-dcb5-458c-95b3-843a47217b59.jpg" alt="exquisite high fashion photography of A female warrior character concept  Full b" title="exquisite high fashion photography of A female warrior character concept  Full b"><figcaption class="stlab">High Fashion 高級時尚</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_photography_of_A_female_warrior_character_concept__Full_body__candid_photography-0_26bc959e-3e02-40bc-ad6d-297f5f92c2d4.jpg" alt="photography of A female warrior character concept  Full body  candid photography" title="photography of A female warrior character concept  Full body  candid photography"><figcaption class="stlab">Candid 街拍</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_professional_black_and_white_photography_of_A_female_warrior_character_concept__-0_34c9421e-ff95-49d9-bf64-54c44f02285b.jpg" alt="professional black and white photography of A female warrior character concept" title="professional black and white photography of A female warrior character concept"><figcaption class="stlab">Black & White 黑白</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/flux-pro-2_0_professional_photo_of_A_female_warrior_character_concept__Full_body__photography-0_c4d96bbe-c046-4993-b127-bad0e8a2cccf.jpg" alt="professional photo of A female warrior character concept  Full body  photography" title="professional photo of A female warrior character concept  Full body  photography"><figcaption class="stlab">Photography 寫實攝影</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-phoenix">
+        <span class="rank">4</span>
+        <span class="nm">Phoenix 1.0</span>
+        <span class="score sc-none">—</span>
+        <span class="cnt">20 張</span>
+        <span class="brk">獨家 Sketch·Vector·Pop Art — 線稿/向量/普普首選</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-phoenix">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_A_female_warrior_character_concept__Full_body_-0_c41f37b4-9613-4c37-aeca-46942bead51a.jpg" alt="A female warrior character concept  Full body" title="A female warrior character concept  Full body"><figcaption class="stlab">無風格（原圖）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_A_stunning_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Fu-0_028c5a56-5523-4e53-9947-e1dede47f3ef.jpg" alt="A stunning and vibrant cinematic photo of A female warrior character concept  Fu" title="A stunning and vibrant cinematic photo of A female warrior character concept  Fu"><figcaption class="stlab">Vibrant Cinematic 鮮豔電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_Professional_graphic_design_flat_vector_art_A_female_warrior_character_concept__-0_84d68f1a-f20e-4595-847a-c2fbddbad2f9.jpg" alt="Professional graphic design flat vector art A female warrior character concept" title="Professional graphic design flat vector art A female warrior character concept"><figcaption class="stlab">Flat Vector 扁平向量</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_Professional_graphic_design_pop_art_style_A_female_warrior_character_concept__Fu-0_61bc033e-fce3-4021-b6c0-fcb50b714241.jpg" alt="Professional graphic design pop art style A female warrior character concept  Fu" title="Professional graphic design pop art style A female warrior character concept  Fu"><figcaption class="stlab">Pop Art 普普風</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_a_cinematic_photo_of_A_female_warrior_character_concept__Full_body__photography-0_9f83e1b7-a6bf-409c-a6b4-794ebce3e3be.jpg" alt="a cinematic photo of A female warrior character concept  Full body  photography" title="a cinematic photo of A female warrior character concept  Full body  photography"><figcaption class="stlab">Cinematic Photo 電影攝影</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_a_lush_3d_render_of_A_female_warrior_character_concept__Full_body__3D_model_exci-0_83c322a4-2c1f-4c54-b1a3-7cf6055e541e.jpg" alt="a lush 3d render of A female warrior character concept  Full body  3D model exci" title="a lush 3d render of A female warrior character concept  Full body  3D model exci"><figcaption class="stlab">3D Render 立體渲染</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_a_masterpiece_rough_color_pencil_sketch_of_A_female_warrior_character_concept__F-0_d6d8a741-718b-43e7-b19c-974f2f1bbe3e.jpg" alt="a masterpiece rough color pencil sketch of A female warrior character concept  F" title="a masterpiece rough color pencil sketch of A female warrior character concept  F"><figcaption class="stlab">Pencil Sketch 色鉛筆速寫</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_a_stunning_illustration_of_A_female_warrior_character_concept__Full_body__best_q-0_b2b0ecc9-a816-425a-80ca-5bf96148d56e.jpg" alt="a stunning illustration of A female warrior character concept  Full body  best q" title="a stunning illustration of A female warrior character concept  Full body  best q"><figcaption class="stlab">Illustration 插畫</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_a_surreal_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Ful-0_406a859f-e1d9-4cb6-ae93-4ab0c3f6a78a.jpg" alt="a surreal and vibrant cinematic photo of A female warrior character concept  Ful" title="a surreal and vibrant cinematic photo of A female warrior character concept  Ful"><figcaption class="stlab">Surreal Cinematic 超現實電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_artistic_portrait_photography_of_A_female_warrior_character_concept__Full_body__-0_ab09fcb9-23ec-4d15-9196-841aeb35a35b.jpg" alt="artistic portrait photography of A female warrior character concept  Full body" title="artistic portrait photography of A female warrior character concept  Full body"><figcaption class="stlab">Artistic Portrait 藝術人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_bokeh_effect_photography_of_A_female_warrior_character_concept__Full_body__photo-0_64e2f6af-3d9c-45a8-b419-ee3cb980dad4.jpg" alt="bokeh effect photography of A female warrior character concept  Full body  photo" title="bokeh effect photography of A female warrior character concept  Full body  photo"><figcaption class="stlab">Bokeh 散景</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_cinematic_keyframe_1_5_A_female_warrior_character_concept__Full_body__cinematic_-0_461bee76-d6fb-4149-86b9-f9d973c32b3c.jpg" alt="cinematic keyframe 1 5 A female warrior character concept  Full body  cinematic" title="cinematic keyframe 1 5 A female warrior character concept  Full body  cinematic"><figcaption class="stlab">Cinematic Keyframe 電影關鍵格</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_cross_processing_vintage_film_photography_of_A_female_warrior_character_concept_-0_501a67fd-114c-48da-b4cd-969353b48749.jpg" alt="cross processing vintage film photography of A female warrior character concept" title="cross processing vintage film photography of A female warrior character concept"><figcaption class="stlab">Vintage Film 復古底片</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_exquisite_high_fashion_photography_of_A_female_warrior_character_concept__Full_b-0_7412bd09-16b2-4e55-a289-d526878e2c79.jpg" alt="exquisite high fashion photography of A female warrior character concept  Full b" title="exquisite high fashion photography of A female warrior character concept  Full b"><figcaption class="stlab">High Fashion 高級時尚</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_exquisite_macro_photography_closeup_of_A_female_warrior_character_concept__Full_-0_226e3304-ae88-4423-af74-34e8adcfcee3.jpg" alt="exquisite macro photography closeup of A female warrior character concept  Full" title="exquisite macro photography closeup of A female warrior character concept  Full"><figcaption class="stlab">Macro Closeup 微距特寫</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_minimalist_photography_style_of_A_female_warrior_character_concept__Full_body__p-0_ba1f43cf-6374-487d-a593-9e3689140dfe.jpg" alt="minimalist photography style of A female warrior character concept  Full body  p" title="minimalist photography style of A female warrior character concept  Full body  p"><figcaption class="stlab">Minimalist 極簡</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_moody_atmospheric_photography_of_A_female_warrior_character_concept__Full_body__-0_35f0d2b4-c58a-43f5-b717-806158365e27.jpg" alt="moody atmospheric photography of A female warrior character concept  Full body" title="moody atmospheric photography of A female warrior character concept  Full body"><figcaption class="stlab">Moody Atmospheric 氛圍感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_photography_of_A_female_warrior_character_concept__Full_body__candid_photography-0_f11474bc-5921-4ea0-aead-cb81e5d224ac.jpg" alt="photography of A female warrior character concept  Full body  candid photography" title="photography of A female warrior character concept  Full body  candid photography"><figcaption class="stlab">Candid 街拍</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_professional_black_and_white_photography_of_A_female_warrior_character_concept__-0_d92dcdcb-f7b9-4f88-8f4f-493623cbb3d6.jpg" alt="professional black and white photography of A female warrior character concept" title="professional black and white photography of A female warrior character concept"><figcaption class="stlab">Black & White 黑白</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/phoenix-v1_0_professional_photo_of_A_female_warrior_character_concept__Full_body__photography-0_a6421605-5c4c-4f58-9d62-8ef427ddb9d0.jpg" alt="professional photo of A female warrior character concept  Full body  photography" title="professional photo of A female warrior character concept  Full body  photography"><figcaption class="stlab">Photography 寫實攝影</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-lucid">
+        <span class="rank">5</span>
+        <span class="nm">Lucid Realism</span>
+        <span class="score sc-none">—</span>
+        <span class="cnt">16 張</span>
+        <span class="brk">大量『完整全身』寫實 style — 最划算的角色參考圖</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-lucid">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-origin_A_female_warrior_character_concept__Full_body_-0_95a2e56d-622b-4de3-b591-8cef63d0ab43.jpg" alt="A female warrior character concept  Full body" title="A female warrior character concept  Full body"><figcaption class="stlab">無風格（原圖）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_a_surreal_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Ful-0_1cde4809-3d70-4725-8054-6728b104b0fc.jpg" alt="a surreal and vibrant cinematic photo of A female warrior character concept  Ful" title="a surreal and vibrant cinematic photo of A female warrior character concept  Ful"><figcaption class="stlab">Surreal Cinematic 超現實電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_analogue_photography_of_A_female_warrior_character_concept__Full_body__photograp-0_45bdc914-6b62-46e9-a0e6-ab175ec6c131.jpg" alt="analogue photography of A female warrior character concept  Full body  photograp" title="analogue photography of A female warrior character concept  Full body  photograp"><figcaption class="stlab">Analogue 類比底片</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_artistic_portrait_photography_of_A_female_warrior_character_concept__Full_body__-0_95d9fb2a-c53f-4ba6-86bf-fab9fbaa0301.jpg" alt="artistic portrait photography of A female warrior character concept  Full body" title="artistic portrait photography of A female warrior character concept  Full body"><figcaption class="stlab">Artistic Portrait 藝術人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_bokeh_effect_photography_of_A_female_warrior_character_concept__Full_body__photo-0_92d3bcbd-b78a-4d28-bd1a-16f643c6660b.jpg" alt="bokeh effect photography of A female warrior character concept  Full body  photo" title="bokeh effect photography of A female warrior character concept  Full body  photo"><figcaption class="stlab">Bokeh 散景</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_cinematic_photo_closeup_of_A_female_warrior_character_concept__Full_body__photog-0_41427079-cc00-40ff-a567-142eca08b6b0.jpg" alt="cinematic photo closeup of A female warrior character concept  Full body  photog" title="cinematic photo closeup of A female warrior character concept  Full body  photog"><figcaption class="stlab">Cinematic Closeup 電影特寫</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_exquisite_macro_photography_closeup_of_A_female_warrior_character_concept__Full_-0_47947b45-f49d-4bf0-a6e4-6e5fe8a47714.jpg" alt="exquisite macro photography closeup of A female warrior character concept  Full" title="exquisite macro photography closeup of A female warrior character concept  Full"><figcaption class="stlab">Macro Closeup 微距特寫</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_exquisite_macro_photography_closeup_of_A_female_warrior_character_concept__Full_-0_531078a7-0bf0-4a6f-8986-b6c9234206df.jpg" alt="exquisite macro photography closeup of A female warrior character concept  Full" title="exquisite macro photography closeup of A female warrior character concept  Full"><figcaption class="stlab">Macro Closeup 微距特寫</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_high_dynamic_range_HDR_photography_of_A_female_warrior_character_concept__Full_b-0_295bbb98-146e-4e74-967b-dbfcff5e373f.jpg" alt="high dynamic range HDR photography of A female warrior character concept  Full b" title="high dynamic range HDR photography of A female warrior character concept  Full b"><figcaption class="stlab">HDR 高動態</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_long_exposure_time_photography_of_A_female_warrior_character_concept__Full_body_-0_0e019c04-05eb-4a5f-927b-55713ca8dc78.jpg" alt="long exposure time photography of A female warrior character concept  Full body" title="long exposure time photography of A female warrior character concept  Full body"><figcaption class="stlab">Long Exposure 長曝光</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_minimalist_photography_style_of_A_female_warrior_character_concept__Full_body__p-0_ced98b59-2fec-4d18-8557-674e02208064.jpg" alt="minimalist photography style of A female warrior character concept  Full body  p" title="minimalist photography style of A female warrior character concept  Full body  p"><figcaption class="stlab">Minimalist 極簡</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_monochrome_photography_A_female_warrior_character_concept__Full_body__photograph-0_bbc64271-88b6-419f-ade9-342cb92ae363.jpg" alt="monochrome photography A female warrior character concept  Full body  photograph" title="monochrome photography A female warrior character concept  Full body  photograph"><figcaption class="stlab">Monochrome 單色</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_moody_atmospheric_photography_of_A_female_warrior_character_concept__Full_body__-0_559e8369-7d0a-4523-a33f-158093d7c86c.jpg" alt="moody atmospheric photography of A female warrior character concept  Full body" title="moody atmospheric photography of A female warrior character concept  Full body"><figcaption class="stlab">Moody Atmospheric 氛圍感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_professional_food_photography_of_A_female_warrior_character_concept__Full_body__-0_9165f082-2493-4c20-9d28-90c174f00d04.jpg" alt="professional food photography of A female warrior character concept  Full body" title="professional food photography of A female warrior character concept  Full body"><figcaption class="stlab">Food Photography 食物攝影</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_professional_photo_of_A_female_warrior_character_concept__Full_body__photography-0_3841e0ba-7abf-4db9-8d48-1b83561c954c.jpg" alt="professional photo of A female warrior character concept  Full body  photography" title="professional photo of A female warrior character concept  Full body  photography"><figcaption class="stlab">Photography 寫實攝影</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/lucid-realism_retro_style_photography_of_A_female_warrior_character_concept__Full_body__photog-0_e9227703-7d79-4e2c-ae66-e5aa8b15463b.jpg" alt="retro style photography of A female warrior character concept  Full body  photog" title="retro style photography of A female warrior character concept  Full body  photog"><figcaption class="stlab">Retro 復古</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-seedream">
+        <span class="rank">6</span>
+        <span class="nm">Seedream 4.5</span>
+        <span class="score sc-none">—</span>
+        <span class="cnt">7 張</span>
+        <span class="brk">7 個寫實 style，Dynamic 97 最佳</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-seedream">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_A_female_warrior_character_concept__Full_body_-0_e775b36b-8149-4acb-9982-a779c811aac9.jpg" alt="A female warrior character concept  Full body" title="A female warrior character concept  Full body"><figcaption class="stlab">無風格（原圖）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_A_stunning_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Fu-0_0ba5e6eb-ef5c-4419-b81e-babacac2592e.jpg" alt="A stunning and vibrant cinematic photo of A female warrior character concept  Fu" title="A stunning and vibrant cinematic photo of A female warrior character concept  Fu"><figcaption class="stlab">Vibrant Cinematic 鮮豔電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_a_cinematic_photo_of_A_female_warrior_character_concept__Full_body__photography-0_f0eab625-4495-493e-b88a-ceb75fa15ef0.jpg" alt="a cinematic photo of A female warrior character concept  Full body  photography" title="a cinematic photo of A female warrior character concept  Full body  photography"><figcaption class="stlab">Cinematic Photo 電影攝影</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_a_surreal_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Ful-0_a3e8a3d8-31bf-4fa6-88bf-1357af596e55.jpg" alt="a surreal and vibrant cinematic photo of A female warrior character concept  Ful" title="a surreal and vibrant cinematic photo of A female warrior character concept  Ful"><figcaption class="stlab">Surreal Cinematic 超現實電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_artistic_portrait_photography_of_A_female_warrior_character_concept__Full_body__-0_64bd7c5f-2ba6-40c8-8ac7-a2892bba225e.jpg" alt="artistic portrait photography of A female warrior character concept  Full body" title="artistic portrait photography of A female warrior character concept  Full body"><figcaption class="stlab">Artistic Portrait 藝術人像</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_exquisite_high_fashion_photography_of_A_female_warrior_character_concept__Full_b-0_2ce90958-d8a1-4689-93ab-fe1baf933158.jpg" alt="exquisite high fashion photography of A female warrior character concept  Full b" title="exquisite high fashion photography of A female warrior character concept  Full b"><figcaption class="stlab">High Fashion 高級時尚</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/seedream-4_5_professional_photo_of_A_female_warrior_character_concept__Full_body__photography-0_be561b5f-fece-4b01-bef5-9986661401af.jpg" alt="professional photo of A female warrior character concept  Full body  photography" title="professional photo of A female warrior character concept  Full body  photography"><figcaption class="stlab">Photography 寫實攝影</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-kino">
+        <span class="rank">7</span>
+        <span class="nm">Cinematic Kino</span>
+        <span class="score sc-none">—</span>
+        <span class="cnt">7 張</span>
+        <span class="brk">舊 SDXL 氛圍向，Cinematic 98；避開 Macro/Close-Up</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-kino">
+      <div class="gal">
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_A_female_warrior_character_concept_-0_e94ed2d9-3abc-4659-a4e6-78abec022d90.jpg" alt="A female warrior character concept" title="A female warrior character concept"><figcaption class="stlab">無風格（原圖）</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_a_cinematic_photo_of_A_female_warrior_character_concept__Full_body__photography-0_337c4ef4-298b-4046-bf4d-d0b0e5015636.jpg" alt="a cinematic photo of A female warrior character concept  Full body  photography" title="a cinematic photo of A female warrior character concept  Full body  photography"><figcaption class="stlab">Cinematic Photo 電影攝影</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_a_cinematic_photo_of_A_female_warrior_character_concept__photography-0_e112f4dc-9d94-4223-9b08-717b15e22f2f.jpg" alt="a cinematic photo of A female warrior character concept  photography" title="a cinematic photo of A female warrior character concept  photography"><figcaption class="stlab">Cinematic Photo 電影攝影</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_a_surreal_and_vibrant_cinematic_photo_of_A_female_warrior_character_concept__Ful-0_b1b409de-2103-44cd-b321-3d185688530e.jpg" alt="a surreal and vibrant cinematic photo of A female warrior character concept  Ful" title="a surreal and vibrant cinematic photo of A female warrior character concept  Ful"><figcaption class="stlab">Surreal Cinematic 超現實電影感</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_cinematic_photo_closeup_of_A_female_warrior_character_concept__Full_body__photog-0_759a3d0b-d19f-405b-9a32-a44f203f5a3b.jpg" alt="cinematic photo closeup of A female warrior character concept  Full body  photog" title="cinematic photo closeup of A female warrior character concept  Full body  photog"><figcaption class="stlab">Cinematic Closeup 電影特寫</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_exquisite_high_fashion_photography_of_A_female_warrior_character_concept__Full_b-0_10dce479-cd9a-4fc5-858d-8832c359786d.jpg" alt="exquisite high fashion photography of A female warrior character concept  Full b" title="exquisite high fashion photography of A female warrior character concept  Full b"><figcaption class="stlab">High Fashion 高級時尚</figcaption></figure>
+        <figure class="g"><img loading="lazy" src="thumbs/kino-xl_monochrome_photography_A_female_warrior_character_concept__Full_body__photograph-0_b21cfb36-679c-4083-927c-3be4340e0f69.jpg" alt="monochrome photography A female warrior character concept  Full body  photograph" title="monochrome photography A female warrior character concept  Full body  photograph"><figcaption class="stlab">Monochrome 單色</figcaption></figure>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<div class="lb" id="lb"><button class="x" id="lbx">✕ 關閉</button><img id="lbimg" alt=""><div class="cap" id="lbcap"></div></div>
+
+<script>
+// lightbox
+var lb=document.getElementById("lb"),lbimg=document.getElementById("lbimg"),lbcap=document.getElementById("lbcap");
+document.querySelectorAll("figure.g").forEach(function(fig){
+  fig.addEventListener("click",function(){
+    var img=fig.querySelector("img");
+    lbimg.src=img.src; lbcap.textContent=img.title||""; lb.classList.add("on");
+  });
+});
+function closeLb(){lb.classList.remove("on");lbimg.src="";}
+document.getElementById("lbx").addEventListener("click",closeLb);
+lb.addEventListener("click",function(e){if(e.target===lb)closeLb();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeLb();});
+// accordion
+document.querySelectorAll(".acc-h").forEach(function(h){
+  if(h.disabled) return;
+  h.addEventListener("click",function(){
+    var b=document.getElementById(h.getAttribute("data-t"));
+    var open=h.classList.toggle("open");
+    if(b) b.classList.toggle("open",open);
+  });
+});
+// sidebar active highlight
+var links=[].slice.call(document.querySelectorAll(".side a"));
+var map=links.map(function(a){return {a:a,sec:document.querySelector(a.getAttribute("href"))};}).filter(function(m){return m.sec;});
+var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){map.forEach(function(m){m.a.classList.toggle("active",m.sec===e.target);});}});},{rootMargin:"-40% 0px -55% 0px"});
+map.forEach(function(m){obs.observe(m.sec);});
+</script>
+</body>
+</html>

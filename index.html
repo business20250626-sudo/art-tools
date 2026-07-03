@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leonardo 教學｜功能總覽</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --tx:#e8eaf0; --tx2:#a8b0c0; --tx3:#7b8499;
+    --accent:#7c9cff; --accent2:#5ad1c4; --gold:#e8c14b;
+    --sidebar:248px; --shot-h:360px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+    line-height:1.7;font-size:15px;}
+
+  /* top nav (site pages) */
+  .nav{position:sticky;top:0;z-index:30;background:rgba(15,17,21,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .nav .inner{max-width:1280px;margin:0 auto;padding:12px 20px;display:flex;
+    align-items:center;gap:8px;flex-wrap:wrap;}
+  .nav .brand{font-weight:700;font-size:15px;margin-right:10px;letter-spacing:.5px;}
+  .nav a{color:var(--tx2);text-decoration:none;font-size:14px;padding:7px 13px;
+    border-radius:9px;border:1px solid transparent;transition:.15s;}
+  .nav a:hover{color:#fff;border-color:var(--line);}
+  .nav a.on{background:var(--accent);color:#0f1115;font-weight:700;}
+  .nav a.soon{color:var(--tx3);cursor:default;}
+  .nav a.soon:hover{border-color:transparent;color:var(--tx3);}
+  .nav a.soon::after{content:"即將推出";font-size:10px;margin-left:6px;
+    color:var(--tx3);border:1px solid var(--line);border-radius:5px;padding:1px 5px;}
+
+  /* layout: sidebar + content */
+  .layout{max-width:1280px;margin:0 auto;display:flex;gap:0;align-items:flex-start;}
+  .side{width:var(--sidebar);flex:none;position:sticky;top:57px;align-self:flex-start;
+    height:calc(100vh - 57px);overflow-y:auto;padding:22px 14px;border-right:1px solid var(--line);}
+  .side .lbl{color:var(--tx3);font-size:11px;letter-spacing:1px;padding:4px 12px;margin-bottom:4px;}
+  .side a{display:flex;align-items:center;gap:10px;color:var(--tx2);text-decoration:none;
+    font-size:14.5px;padding:9px 12px;border-radius:10px;transition:.15s;margin-bottom:2px;}
+  .side a:hover{background:var(--panel2);color:#fff;}
+  .side a.active{background:var(--accent);color:#0f1115;font-weight:700;}
+  .side a .ic{width:18px;text-align:center;flex:none;}
+  .side a .soon-tag{margin-left:auto;font-size:10px;color:var(--tx3);border:1px solid var(--line);
+    border-radius:5px;padding:1px 5px;}
+  .side a.active .soon-tag{color:#0f1115;border-color:rgba(0,0,0,.25);}
+
+  .content{flex:1 1 auto;min-width:0;padding:30px 34px 100px;}
+  h1{font-size:27px;margin:0 0 6px;letter-spacing:.5px;}
+  .sub{color:var(--tx2);font-size:14px;margin-bottom:6px;}
+
+  section{margin:0 0 10px;padding-top:16px;}
+  section+section{border-top:1px solid var(--line);margin-top:36px;padding-top:36px;}
+  h2{font-size:21px;margin:0 0 14px;display:flex;align-items:center;gap:10px;scroll-margin-top:72px;}
+  h2 .ic{font-size:20px;}
+  h2 .en{color:var(--tx3);font-size:13px;font-weight:400;}
+  h3.grp{font-size:15px;color:var(--accent2);margin:22px 0 8px;letter-spacing:.3px;}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin-bottom:14px;}
+  .card h3{font-size:16px;margin:0 0 6px;color:#fff;}
+  .card p{margin:6px 0;color:var(--tx2);}
+  .card ul{margin:8px 0;padding-left:20px;color:var(--tx2);}
+  .card li{margin:5px 0;}
+  .card a{color:var(--accent2);text-decoration:none;border-bottom:1px solid rgba(90,209,196,.4);}
+  .card a:hover{color:#fff;border-bottom-color:#fff;}
+  b,strong{color:#fff;}
+  .tip{border-left:3px solid var(--accent2);background:rgba(90,209,196,.06);
+    border-radius:0 10px 10px 0;padding:10px 14px;margin:10px 0;color:var(--tx2);font-size:14px;}
+  .tip b{color:var(--accent2);}
+  .soon-block{border:1.5px dashed var(--line);border-radius:14px;padding:30px;text-align:center;
+    color:var(--tx3);background:var(--panel);}
+  .soon-block .big{font-size:15px;color:var(--tx2);margin-bottom:4px;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:10px 0;}
+  .gcell{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:13px 15px;}
+  .gcell .t{font-weight:700;color:#fff;font-size:14.5px;}
+  .gcell .en{color:var(--tx3);font-size:11.5px;margin-bottom:4px;}
+  .gcell .d{color:var(--tx2);font-size:13.5px;}
+
+  figure.shot{margin:12px 0;}
+  figure.shot img{width:100%;height:var(--shot-h);object-fit:contain;border-radius:11px;display:block;
+    border:1px solid var(--line);background:var(--panel2);}
+  figure.shot figcaption{color:var(--tx3);font-size:12.5px;margin-top:6px;}
+  figure.shot .ph{width:100%;height:var(--shot-h);border:1.5px dashed var(--line);border-radius:11px;
+    background:var(--panel2);display:flex;align-items:center;justify-content:center;text-align:center;
+    color:var(--tx3);font-size:13px;padding:20px;}
+  figure.shot .ph code{color:var(--accent);font-size:12px;}
+  /* side-by-side image pair (參考圖 vs 生成圖) */
+  .shotpair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0;}
+  .shotpair figure{margin:0;}
+  .shotpair .tag{font-size:12.5px;color:var(--tx2);margin-bottom:6px;font-weight:600;}
+  @media(max-width:600px){.shotpair{grid-template-columns:1fr;}}
+
+  .prompt{position:relative;background:#0b0d12;border:1px solid var(--line);border-radius:11px;
+    padding:14px 16px;margin:10px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:13px;color:#cdd3e0;line-height:1.6;white-space:pre-wrap;}
+  .prompt .cp{position:absolute;top:10px;right:10px;background:var(--panel2);border:1px solid var(--line);
+    color:var(--tx2);border-radius:7px;font-size:12px;padding:5px 11px;cursor:pointer;transition:.15s;}
+  .prompt .cp:hover{border-color:var(--accent);background:var(--accent);color:#0f1115;}
+
+  /* home cards */
+  .homegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:18px;}
+  .homecard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+    text-decoration:none;color:var(--tx);transition:.15s;display:block;}
+  .homecard:hover{border-color:var(--accent2);transform:translateY(-2px);}
+  .homecard .ic{font-size:22px;}
+  .homecard .t{font-weight:700;font-size:16px;margin:8px 0 2px;}
+  .homecard .d{color:var(--tx2);font-size:13px;}
+
+  /* workshop */
+  .workshop{background:linear-gradient(180deg,rgba(232,193,75,.06),rgba(232,193,75,0));
+    border:1px solid rgba(232,193,75,.35);border-radius:14px;padding:18px 20px;margin:16px 0;}
+  .workshop .wh{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--gold);
+    font-size:15px;margin-bottom:4px;}
+  .workshop .wdesc{color:var(--tx2);font-size:13.5px;margin-bottom:10px;}
+  .workshop ol{margin:0;padding-left:22px;color:var(--tx);counter-reset:none;}
+  .workshop ol li{margin:8px 0;padding-left:4px;}
+  .workshop ol li b{color:#fff;}
+  .workshop .goal{margin-top:12px;border-top:1px dashed rgba(232,193,75,.3);padding-top:10px;
+    color:var(--tx2);font-size:13.5px;}
+  .workshop .goal b{color:var(--gold);}
+  /* single exercise: title + image slot + text */
+  .exercise{background:var(--panel2);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;margin:12px 0;}
+  .exercise .ex-title{font-weight:700;color:#fff;font-size:15px;margin-bottom:10px;}
+  .exercise .ex-title .n{color:var(--gold);margin-right:4px;}
+  .exercise .ex-desc{color:var(--tx2);font-size:14px;margin:8px 0 0;}
+  /* instructional note shown above an image */
+  .shot-note{color:var(--tx2);font-size:14px;margin:0 0 8px;}
+  /* nested sub-list inside a card list item */
+  .card ul ul{margin:6px 0 2px;padding-left:18px;}
+  .card ul ul li{color:var(--tx2);}
+
+  .foot{margin-top:54px;color:var(--tx3);font-size:12px;border-top:1px solid var(--line);padding-top:16px;}
+
+  @media(max-width:820px){
+    .side{display:none;}
+    .content{padding:24px 18px 80px;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="inner">
+    <span class="brand">AI 生成工具教學</span>
+    <a class="on" href="index.html">Leonardo 教學</a>
+    <a href="Leonardo選模型.html">圖片模型評測</a>
+    <a href="評測樣本.html">圖片評判標準與樣本</a>
+    <a class="soon">影片模型評測</a>
+    <a href="問答紀錄.html">問答紀錄</a>
+    <a class="soon">Higgsfield</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside class="side">
+    <div class="lbl">功能選單</div>
+    <a href="#home"><span class="ic">🏠</span>首頁</a>
+    <a href="#library"><span class="ic">📚</span>Library</a>
+    <a href="#image"><span class="ic">🖼️</span>Image</a>
+    <a href="#video"><span class="ic">🎬</span>Video</a>
+    <a href="#threed"><span class="ic">🧊</span>3D</a>
+    <a href="#blueprint"><span class="ic">🧩</span>Blueprint</a>
+    <a href="#upscaler"><span class="ic">🔍</span>Upscaler</a>
+    <a href="#flow"><span class="ic">🌊</span>Flow State</a>
+  </aside>
+
+  <main class="content">
+
+  <!-- HOME -->
+  <section id="home">
+    <h1>Leonardo 教學 — 介面簡介</h1>
+    <div class="sub">先認識 Leonardo AI 的主要介面，再從左側選單挑功能深入了解。</div>
+    <figure class="shot">
+      <img src="教學圖/leonardo/首頁.png" alt="Leonardo 介面總覽" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="ph" style="display:none">截圖佔位：Leonardo 介面總覽<br><code>教學圖/leonardo/首頁.png</code></div>
+    </figure>
+    <div class="card">
+      <p>Leonardo 的介面大致分成幾個區塊，本教學會依左側選單逐項說明：</p>
+      <div class="grid">
+        <div class="gcell"><div class="t">📚 Library</div><div class="d">收藏與素材管理</div></div>
+        <div class="gcell"><div class="t">🖼️ Image</div><div class="d">生圖基礎、Prompt、參照圖引導</div></div>
+        <div class="gcell"><div class="t">🎬 Video</div><div class="d">影片生成</div></div>
+        <div class="gcell"><div class="t">🧊 3D</div><div class="d">3D 模型生成</div></div>
+        <div class="gcell"><div class="t">🧩 Blueprint</div><div class="d">整套流程直接套用</div></div>
+        <div class="gcell"><div class="t">🔍 Upscaler</div><div class="d">放大與提升細節</div></div>
+        <div class="gcell"><div class="t">🌊 Flow State</div><div class="d">前期找風格的好幫手</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section id="library">
+    <h2><span class="ic">📚</span>Library <span class="en">素材庫</span></h2>
+    <figure class="shot">
+      <img src="教學圖/leonardo/library.png" alt="Library / Collections 介面" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="ph" style="display:none">截圖佔位：Library / Collections 介面<br><code>教學圖/leonardo/library.png</code></div>
+    </figure>
+    <div class="card">
+      <ul>
+        <li><b>My Generations：</b>生成的資產存放位置</li>
+        <li><b>Your Uploads：</b>上傳的資產存放位置</li>
+        <li><b>Follower Feeds：</b>喜歡創作者的作品</li>
+        <li><b>Likes Feeds：</b>喜歡的作品</li>
+        <li><b>Collections：</b>可根據專案做資產存放的位置</li>
+      </ul>
+    </div>
+
+    <div class="workshop">
+      <div class="wh">🛠️ Library 工作坊</div>
+      <div class="wdesc">跟著步驟操作一次，熟悉素材的整理與收藏。</div>
+
+      <div class="exercise">
+        <div class="ex-title"><span class="n">練習一、</span>生成一張圖片並到 Your Generations 查看</div>
+        <figure class="shot">
+          <p class="shot-note">點擊 image，並在 prompt 輸入 cat，便能在下方看到生成的貓咪圖片</p>
+          <img src="教學圖/leonardo/library-練習1.png" alt="練習一 示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:none">圖片佔位<br><code>教學圖/leonardo/library-練習1.png</code></div>
+        </figure>
+        <figure class="shot">
+          <p class="shot-note">點擊 Library 的 My Generations 也會看到剛剛生成的貓咪圖片</p>
+          <img src="教學圖/leonardo/library-練習1-2.png" alt="練習一 示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:none">圖片佔位<br><code>教學圖/leonardo/library-練習1-2.png</code></div>
+        </figure>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-title"><span class="n">練習二、</span>從 Library 的 Your Uploads 上傳，或直接從生成頁面上傳要使用的資產</div>
+        <figure class="shot">
+          <p class="shot-note">點擊 Library 的 Your Uploads，點擊 Upload an image 選擇你想上傳的資產</p>
+          <img src="教學圖/leonardo/library-練習2.png" alt="練習二 示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:none">圖片佔位<br><code>教學圖/leonardo/library-練習2.png</code></div>
+        </figure>
+        <figure class="shot">
+          <p class="shot-note">點擊 image 左側 Model 選擇 GPT Image 2（因為不一定每個模型都有 Image Reference 的功能），再點擊 prompt 左側圖標，選擇 Image Reference</p>
+          <img src="教學圖/leonardo/library-練習2-2.png" alt="練習二 示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:none">圖片佔位<br><code>教學圖/leonardo/library-練習2-2.png</code></div>
+        </figure>
+        <figure class="shot">
+          <p class="shot-note">選擇 Image Reference 就可以上傳你想使用的資產了</p>
+          <img src="教學圖/leonardo/library-練習2-3.png" alt="練習二 示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:none">圖片佔位<br><code>教學圖/leonardo/library-練習2-3.png</code></div>
+        </figure>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-title"><span class="n">練習三、</span>到公共區域挑選喜歡的作者及作品</div>
+        <figure class="shot">
+          <p class="shot-note">首頁往下滑會有 Community Creations 是別人的作品，點擊喜歡的圖片</p>
+          <img src="教學圖/leonardo/library-練習3.png" alt="練習三 示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:none">圖片佔位<br><code>教學圖/leonardo/library-練習3.png</code></div>
+        </figure>
+        <figure class="shot">
+          <p class="shot-note">按愛心就會儲存到 Likes Feeds，點擊星星會儲存到 Follower Feeds</p>
+          <img src="教學圖/leonardo/library-練習3-2.png" alt="練習三 示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:none">圖片佔位<br><code>教學圖/leonardo/library-練習3-2.png</code></div>
+        </figure>
+      </div>
+
+      <div class="exercise">
+        <div class="ex-title"><span class="n">練習四、</span>建立新 Collection 並添加資產</div>
+        <figure class="shot">
+          <p class="shot-note">點擊 New Collection</p>
+          <img src="教學圖/leonardo/library-練習4.png" alt="練習四 示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:none">圖片佔位<br><code>教學圖/leonardo/library-練習4.png</code></div>
+        </figure>
+        <figure class="shot">
+          <p class="shot-note">寫入 Collection 名稱，並選擇添加圖片</p>
+          <img src="教學圖/leonardo/library-練習4-2.png" alt="練習四 示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:none">圖片佔位<br><code>教學圖/leonardo/library-練習4-2.png</code></div>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMAGE -->
+  <section id="image">
+    <h2><span class="ic">🖼️</span>Image <span class="en">生圖</span></h2>
+
+    <h3 class="grp">生圖基礎</h3>
+
+    <figure class="shot">
+      <img src="教學圖/leonardo/pic-basic.png" alt="生成參數面板（模型、Seed）" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="ph" style="display:none">截圖佔位：生成參數面板（模型、Seed）<br><code>教學圖/leonardo/pic-basic.png</code></div>
+    </figure>
+    <div class="card">
+      <ul>
+        <li><b>Model：</b>多款模型供選擇，不會錯過當前強勢模型，模型選擇請參考<a href="Leonardo選模型.html">選模型頁面</a></li>
+        <li><b>Prompt Enhance：</b>prompt 增強，得生成出來才知道它幫你改寫的文字</li>
+        <li><b>Style：</b>風格挑選，每個模型下會有的風格都不一樣，詳情可參照<a href="Leonardo選模型.html">選模型頁面</a></li>
+        <li><b>Image Dimensions：</b>圖片比例、尺寸</li>
+        <li><b>Number of generations：</b>圖片張數</li>
+        <li><b>Use Fixed Seed：</b>固定種子，讓圖片生成固定，但不一定有這個功能</li>
+      </ul>
+    </div>
+
+    <h3 class="grp">Prompt 提示詞</h3>
+    <div class="card">
+      <p><b>Prompt 越早寫到的描述，在生成的圖片中越容易被凸顯</b>，所以要把想強調的主體描述寫在前面。</p>
+    </div>
+    <figure class="shot">
+      <img src="教學圖/leonardo/prompt.png" alt="Prompt 撰寫示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="ph" style="display:none">截圖佔位：Prompt 撰寫示意<br><code>教學圖/leonardo/prompt.png</code></div>
+    </figure>
+
+    <h3 class="grp">Image Guidance 參照圖引導</h3>
+    <div class="card">
+      <p>用一張參照圖引導生成,風格上會更接近,建議多加利用此功能以貼近公司風格</p>
+    </div>
+    <div class="shotpair">
+      <figure class="shot">
+        <div class="tag">參考圖片</div>
+        <img src="教學圖/leonardo/ref-img.png" alt="參考圖片" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="ph" style="display:none">參考圖片佔位<br><code>教學圖/leonardo/ref-img.png</code></div>
+      </figure>
+      <figure class="shot">
+        <div class="tag">生成圖片</div>
+        <img src="教學圖/leonardo/ref-img-gen.jpg" alt="生成圖片" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="ph" style="display:none">生成圖片佔位<br><code>教學圖/leonardo/ref-img-gen.jpg</code></div>
+      </figure>
+    </div>
+    <div class="card">
+      <h3>Prompt 範例</h3>
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>阿努比斯</div>
+      <p>大家可以依照需求打入更多的元素</p>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section id="video">
+    <h2><span class="ic">🎬</span>Video <span class="en">影片</span></h2>
+    <figure class="shot">
+      <img src="教學圖/leonardo/video.png" alt="Video 生成介面" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="ph" style="display:none">截圖佔位：Video 生成介面<br><code>教學圖/leonardo/video.png</code></div>
+    </figure>
+    <div class="card">
+      <ul>
+        <li><b>Model：</b>多款模型供選擇，不會錯過當前強勢模型，模型選擇待測試後補充</li>
+        <li><b>Duration：</b>影片長度</li>
+        <li><b>Video Dimensions：</b>影片比例、尺寸</li>
+        <li><b>Audio：</b>是否有音效</li>
+        <li><b>Reference：</b>
+          <ul>
+            <li>Image Reference：透過照片作為參考</li>
+            <li>Start frame：提供影片一幀作為開始</li>
+            <li>End frame：提供影片最後一幀作為結束</li>
+            <li>Video Reference：提供完整影片做參考</li>
+            <li>Audio Reference：提供完整聲音做參考</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3D -->
+  <section id="threed">
+    <h2><span class="ic">🧊</span>3D</h2>
+    <figure class="shot">
+      <img src="教學圖/leonardo/3d.png" alt="3D 生成介面" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="ph" style="display:none">截圖佔位：3D 生成介面<br><code>教學圖/leonardo/3d.png</code></div>
+    </figure>
+    <div class="card">
+      <ul>
+        <li><b>Model：</b>目前僅一款</li>
+        <li><b>Mesh Type：</b>網格種類，Triangle 是產生三角形面，幾何細節較豐富；Quad 是產生四邊形面，表面較平滑</li>
+        <li><b>Mesh Quality：</b>網格密度，可以根據實際應用選擇合適的密度，避免運算慢、檔案大</li>
+        <li><b>Material：</b>外觀。展示選 Shaded，預覽效果通常最好；未來可能匯入 Blender、Unity 或 Unreal 繼續編輯，選 PBR；不確定用途，選 All，檔案會較大</li>
+      </ul>
+    </div>
+    <figure class="shot">
+      <img src="教學圖/leonardo/3d-2.png" alt="3D 多視角圖示意" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="ph" style="display:none">截圖佔位：3D 多視角圖示意<br><code>教學圖/leonardo/3d-2.png</code></div>
+    </figure>
+    <div class="card">
+      <p>實作的話需要先透過 3D Reference View Creator 這個 Blueprint 做出多視角圖。</p>
+      <p>目前因為是新功能，做出來的效果臉部不像、身體比例也不對，<b>暫時不建議使用</b>。</p>
+    </div>
+  </section>
+
+  <!-- BLUEPRINT -->
+  <section id="blueprint">
+    <h2><span class="ic">🧩</span>Blueprint <span class="en">流程規劃</span></h2>
+    <div class="card">
+      <p>可以直接使用別人整套設定好的流程來生成最終作品。</p>
+      <p>與 Reference 不同的地方在於：<b>Blueprint 是直接制定好每個步驟做了哪些事情</b>，是完整的流程，而非單張參照。</p>
+      <p>目前僅能使用官方提供的，不能自己建立。</p>
+    </div>
+    <figure class="shot">
+      <img src="教學圖/leonardo/blue-print.png" alt="Blueprint 介面" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="ph" style="display:none">截圖佔位：Blueprint 介面<br><code>教學圖/leonardo/blue-print.png</code></div>
+    </figure>
+  </section>
+
+  <!-- UPSCALER -->
+  <section id="upscaler">
+    <h2><span class="ic">🔍</span>Upscaler <span class="en">放大 / 提升細節</span></h2>
+    <div class="card">
+      <ul>
+        <li><b>Upscaler Type</b>：分為 <b>Realistic（寫實）</b> 與 <b>Artistic（藝術）</b>。官方建議 <b>2D 風格的圖片選用 Artistic</b>。</li>
+        <li><b>放大倍率（Upscale Multiplier）</b>：最高可將解析度放大至 <b>2 倍</b>。</li>
+        <li><b>Creativity Strength</b>：平衡「提示詞的準確度」與「畫面的美感／豐富度」。<b>越低越遵照提示詞，越高越有創意</b>。</li>
+        <li><b>Upscaler：</b>
+          <ul>
+            <li>你的 AI 圖有雜訊、顆粒、小毛病要清 → Pro</li>
+            <li>圖本身已經乾淨，只是要衝到最高解析度、最多細節 → Ultra</li>
+            <li>省點數 / 隨便看看 → Legacy</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="shotpair">
+      <figure class="shot">
+        <div class="tag">直接使用Scale</div>
+        <img src="教學圖/leonardo/upscale.png" alt="參考圖片" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="ph" style="display:none">參考圖片佔位<br><code>教學圖/leonardo/image-reference.jpg</code></div>
+      </figure>
+      <figure class="shot">
+        <div class="tag">點擊圖片後使用Scale</div>
+        <img src="教學圖/leonardo/upscale2.png" alt="生成圖片" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="ph" style="display:none">生成圖片佔位<br><code>教學圖/leonardo/image-generated.jpg</code></div>
+      </figure>
+    </div>
+
+  </section>
+
+  <!-- FLOW STATE -->
+  <section id="flow">
+    <h2><span class="ic">🌊</span>Flow State</h2>
+    <div class="card">
+      <ul>
+        <li>適合<b>前期沒想法</b>時，用來找到自己喜歡的風格。</li>
+        <li>根據風格產出不同的圖片作為參考，點擊 <b>More Like This</b>，接下來產生的圖片會更接近那張圖片。</li>
+        <li><b>此功能需要花錢</b>：當滑過越多圖片，會扣一些費用。</li>
+      </ul>
+    </div>
+    <figure class="shot">
+      <img src="教學圖/leonardo/flow-state.png" alt="Flow State 介面" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="ph" style="display:none">截圖佔位：Flow State 介面 / More Like This<br><code>教學圖/leonardo/flow-state.png</code></div>
+    </figure>
+  </section>
+
+
+  </main>
+</div>
+
+<script>
+function copyPrompt(btn){
+  var text = btn.parentNode.textContent.replace(/^複製/, '').trim();
+  navigator.clipboard.writeText(text).then(function(){
+    var old = btn.textContent; btn.textContent = "已複製 ✓";
+    setTimeout(function(){ btn.textContent = old; }, 1400);
+  });
+}
+// highlight active section in sidebar
+var links = Array.prototype.slice.call(document.querySelectorAll('.side a'));
+var map = links.map(function(a){ return {a:a, sec:document.querySelector(a.getAttribute('href'))}; });
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      map.forEach(function(m){ m.a.classList.toggle('active', m.sec === e.target); });
+    }
+  });
+}, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+map.forEach(function(m){ if(m.sec) obs.observe(m.sec); });
+</script>
+</body>
+</html>
