@@ -9,7 +9,7 @@
 | `index.html` | Leonardo 教學 | Leonardo 介面與各功能（Library / Image / Video / 3D / Blueprint / Upscaler / Flow State）教學，含工作坊練習。 |
 | `Leonardo選模型.html` | 圖片模型評測 | 互動式選模型工具：過濾條件 + 用途矩陣，幫你依需求挑圖片模型。 |
 | `評測樣本.html` | 圖片評判標準與樣本 | 圖片模型的評判 rubric，以及 Phase 1/2/3 全部實測樣本（Phase 3 每張圖標了套用的風格）。 |
-| `影片評測.html` | 影片模型評測 | Leonardo 影片模型 Phase 1（畫面品質）+ Phase 2（動作品質）實測與評分。**目前設為「即將推出」，內容以 HTML 註解暫時隱藏。** |
+| `影片評測.html` | 影片模型評測 | 9 個影片模型跨 5 個 Phase 的實測與評分：Phase 1 畫面品質、Phase 2 動作品質、Phase 3 Prompt 理解、Phase 4 Reference 保留（僅 4 個有 Image Reference 的模型，其餘標注略過）、Phase 5 運鏡控制（Dolly/Orbit/Pan/Crane 各 25 分）、Phase 6 一致性（繞圈時臉／髮／衣／武器／背景／光影是否一致；Seedance 被自家審核擋下無法評分、已標注）。**整頁目前設為「即將推出」，全部內容以 HTML 註解暫時隱藏。** |
 | `問答紀錄.html` | 問答紀錄 | 美術實際問過的問題與解法知識庫，可搜尋、分「🖼️ 圖片 / 🎬 影片」兩個 tab。 |
 
 導覽列還有一個 `Higgsfield`，標「即將推出」尚未建立頁面。
@@ -17,7 +17,7 @@
 ## 資料夾
 
 - `thumbs/` — 圖片評測用的縮圖（約 172 張），`評測樣本.html` 引用。
-- `影片評測/` — 影片評測用的 mp4（Phase 1 各模型 t1/t2、Phase 2 各模型 p2）。
+- `影片評測/` — 影片評測用的 mp4，依 Phase 命名：Phase 1 `*-t1/t2`、Phase 2 `*-p2`、Phase 3 `*-p3`、Phase 4 `*-p4`、Phase 5 `{模型}-p5-{dolly|orbit|pan|crane}`、Phase 6 `*-p6`。
 - `教學圖/`
   - `leonardo/` — `index.html` 教學用截圖。
   - `問答紀錄/` — `問答紀錄.html` 用的圖片與影片（見下方命名規則）。

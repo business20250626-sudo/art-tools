@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>影片模型評測｜Leonardo</title>
+<title>影片評判標準與樣本｜Leonardo</title>
 <style>
   :root{
     --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
@@ -85,38 +85,32 @@
     <a href="index.html">Leonardo 教學</a>
     <a href="Leonardo選模型.html">圖片模型評測</a>
     <a href="評測樣本.html">圖片評判標準與樣本</a>
-    <a class="soon">影片模型評測</a>
+    <a href="影片模型評測.html">影片模型評測</a>
+    <a class="on" href="影片評測.html">影片評判標準與樣本</a>
     <a href="問答紀錄.html">問答紀錄</a>
     <a class="soon">Higgsfield</a>
   </div>
 </nav>
 <div class="layout">
-  <main class="content">
-  <h1>影片模型評測</h1>
-  <div class="sub">整理中，即將推出。</div>
-  <div class="card" style="margin-top:18px;text-align:center;padding:48px 20px;">
-    <div style="font-size:34px;margin-bottom:8px;">🎬</div>
-    <p style="color:var(--tx);font-size:16px;font-weight:700;margin:0 0 4px;">影片模型評測即將推出</p>
-    <p style="color:var(--tx3);font-size:13px;margin:0;">內容整理中，敬請期待。</p>
-  </div>
-  </main>
-  <!-- ===== 內容暫時隱藏（整理中），保留原始碼於下方註解 =====
-
   <aside class="side">
     <div class="lbl">內容</div>
     <a href="#setup"><span>📏</span>測試設定</a>
     <a href="#phase1">Phase 1 · 畫面品質</a>
     <a href="#phase2">Phase 2 · 動作品質</a>
+    <a href="#phase3">Phase 3 · Prompt 理解</a>
+    <a href="#phase4">Phase 4 · Reference 保留</a>
+    <a href="#phase5">Phase 5 · 運鏡控制</a>
+    <a href="#phase6">Phase 6 · 中文理解</a>
   </aside>
   <main class="content">
-  <h1>影片模型評測</h1>
+  <h1>影片評判標準與樣本</h1>
   <div class="sub">Leonardo 影片模型（去重後最新 10 款）的實測與評分。</div>
 
   <section id="setup">
     <h2><span class="ic">📏</span>測試設定</h2>
     <div class="card">
       <ul>
-        <li><b>受測模型（10 款）</b>：Motion 2.0（自家）、Veo 3.1、Gemini Omni Flash、Sora 2 Pro、Kling 3.0、Hailuo 2.3、Seedance 2.0、LTX-2.3 Pro、Grok Imagine 1.5、Happy Horse 1.1。</li>
+        <li><b>受測模型（10 款）</b>：Motion 2.0（自家）、Veo 3.1、Gemini Omni Flash、Sora 2 Pro、Kling 3.0、Hailuo 2.3、Seedance 2.0、LTX-2.3 Pro、Grok Imagine 1.5、Happy Horse 1.1。<b style="color:var(--gold)">⚠ Grok Imagine 1.5 為圖生影片模型，需起始圖，未參與文字 prompt 測試。</b></li>
         <li><b>同一 prompt</b>，各模型每個測試各生成 1 支，設定盡量用預設。</li>
         <li>比例 16:9；時長取各模型預設短版。</li>
       </ul>
@@ -150,36 +144,11 @@
         <tr><td>Artifact（瑕疵/穩定度）</td><td class="pt">10</td></tr>
       </tbody>
     </table>
-    <p class="sub">點模型展開它的 Test 1 / Test 2 影片；分數待實測後填入。</p>
+    <p class="sub">點模型展開它的 Test 1 / Test 2 影片。以下依畫面品質總分排序。</p>
 
     <div class="acc">
-      <button class="acc-h" data-t="p1-motion">
-        <span class="rank">1</span>
-        <span class="nm">Motion 2.0</span>
-        <span class="prov">Leonardo 自家</span>
-        <span class="score">80</span>
-        <span class="brk">構15·細16·美15·材14·光13·瑕7</span>
-        <span class="chev">▸</span>
-      </button>
-      <div class="acc-b" id="p1-motion">
-      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>免點；遊戲渲染感、材質不錯；角色偏中景非全身、場景較霧且少了旅人、動態偏小</p>
-      <div class="vpair">
-        <figure class="v">
-          <div class="tag">Test 1 · 角色</div>
-          <video class="vid" controls preload="metadata" src="影片評測/motion-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/motion-t1.mp4</code></div>
-        </figure>
-        <figure class="v">
-          <div class="tag">Test 2 · 場景</div>
-          <video class="vid" controls preload="metadata" src="影片評測/motion-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/motion-t2.mp4</code></div>
-        </figure>
-      </div>
-      </div>
-    </div>
-    <div class="acc">
       <button class="acc-h" data-t="p1-veo">
-        <span class="rank">2</span>
+        <span class="rank">1</span>
         <span class="nm">Veo 3.1</span>
         <span class="prov">Google</span>
         <span class="score">97</span>
@@ -203,33 +172,8 @@
       </div>
     </div>
     <div class="acc">
-      <button class="acc-h" data-t="p1-gemini">
-        <span class="rank">3</span>
-        <span class="nm">Gemini Omni Flash</span>
-        <span class="prov">Google</span>
-        <span class="score">80</span>
-        <span class="brk">構15·細16·美16·材13·光13·瑕7</span>
-        <span class="chev">▸</span>
-      </button>
-      <div class="acc-b" id="p1-gemini">
-      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>又快又便宜；運鏡/構圖不穩（全身↔特寫跳）</p>
-      <div class="vpair">
-        <figure class="v">
-          <div class="tag">Test 1 · 角色</div>
-          <video class="vid" controls preload="metadata" src="影片評測/gemini-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-t1.mp4</code></div>
-        </figure>
-        <figure class="v">
-          <div class="tag">Test 2 · 場景</div>
-          <video class="vid" controls preload="metadata" src="影片評測/gemini-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-t2.mp4</code></div>
-        </figure>
-      </div>
-      </div>
-    </div>
-    <div class="acc">
       <button class="acc-h" data-t="p1-sora">
-        <span class="rank">4</span>
+        <span class="rank">2</span>
         <span class="nm">Sora 2 Pro</span>
         <span class="prov">OpenAI</span>
         <span class="score">95</span>
@@ -254,7 +198,7 @@
     </div>
     <div class="acc">
       <button class="acc-h" data-t="p1-kling">
-        <span class="rank">5</span>
+        <span class="rank">3</span>
         <span class="nm">Kling 3.0</span>
         <span class="prov">Kuaishou</span>
         <span class="score">87</span>
@@ -278,33 +222,33 @@
       </div>
     </div>
     <div class="acc">
-      <button class="acc-h" data-t="p1-hailuo">
-        <span class="rank">6</span>
-        <span class="nm">Hailuo 2.3</span>
-        <span class="prov">MiniMax</span>
-        <span class="score">77</span>
-        <span class="brk">構16·細14·美14·材12·光12·瑕9</span>
+      <button class="acc-h" data-t="p1-happyhorse">
+        <span class="rank">4</span>
+        <span class="nm">Happy Horse 1.1</span>
+        <span class="prov">Happy Horse</span>
+        <span class="score">87</span>
+        <span class="brk">構17·細16·美17·材14·光14·瑕9</span>
         <span class="chev">▸</span>
       </button>
-      <div class="acc-b" id="p1-hailuo">
-      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>免點、完整全身；偏柔偏糊、對比低</p>
+      <div class="acc-b" id="p1-happyhorse">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>角色/場景都精緻、光影佳、旅人有走動；角色結尾飄成特寫、偏遊戲 CG 風</p>
       <div class="vpair">
         <figure class="v">
           <div class="tag">Test 1 · 角色</div>
-          <video class="vid" controls preload="metadata" src="影片評測/hailuo-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/hailuo-t1.mp4</code></div>
+          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-t1.mp4</code></div>
         </figure>
         <figure class="v">
           <div class="tag">Test 2 · 場景</div>
-          <video class="vid" controls preload="metadata" src="影片評測/hailuo-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/hailuo-t2.mp4</code></div>
+          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-t2.mp4</code></div>
         </figure>
       </div>
       </div>
     </div>
     <div class="acc">
       <button class="acc-h" data-t="p1-seedance">
-        <span class="rank">7</span>
+        <span class="rank">5</span>
         <span class="nm">Seedance 2.0</span>
         <span class="prov">ByteDance</span>
         <span class="score">84</span>
@@ -323,6 +267,56 @@
           <div class="tag">Test 2 · 場景</div>
           <video class="vid" controls preload="metadata" src="影片評測/seedance-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
           <div class="ph" style="display:none">影片待放<br><code>影片評測/seedance-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-motion">
+        <span class="rank">6</span>
+        <span class="nm">Motion 2.0</span>
+        <span class="prov">Leonardo 自家</span>
+        <span class="score">80</span>
+        <span class="brk">構15·細16·美15·材14·光13·瑕7</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-motion">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>免點；遊戲渲染感、材質不錯；角色偏中景非全身、場景較霧且少了旅人、動態偏小</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/motion-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/motion-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/motion-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/motion-t2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p1-gemini">
+        <span class="rank">7</span>
+        <span class="nm">Gemini Omni Flash</span>
+        <span class="prov">Google</span>
+        <span class="score">80</span>
+        <span class="brk">構15·細16·美16·材13·光13·瑕7</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p1-gemini">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>又快又便宜；運鏡/構圖不穩（全身↔特寫跳）</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">Test 1 · 角色</div>
+          <video class="vid" controls preload="metadata" src="影片評測/gemini-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-t1.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">Test 2 · 場景</div>
+          <video class="vid" controls preload="metadata" src="影片評測/gemini-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-t2.mp4</code></div>
         </figure>
       </div>
       </div>
@@ -353,53 +347,33 @@
       </div>
     </div>
     <div class="acc">
-      <button class="acc-h" data-t="p1-grok">
+      <button class="acc-h" data-t="p1-hailuo">
         <span class="rank">9</span>
-        <span class="nm">Grok Imagine 1.5</span>
-        <span class="prov">xAI</span>
-        <span class="score sc-none">—</span>
-        <span class="brk">圖生影片，需起始圖，未做文字測試</span>
+        <span class="nm">Hailuo 2.3</span>
+        <span class="prov">MiniMax</span>
+        <span class="score">77</span>
+        <span class="brk">構16·細14·美14·材12·光12·瑕9</span>
         <span class="chev">▸</span>
       </button>
-      <div class="acc-b" id="p1-grok">
+      <div class="acc-b" id="p1-hailuo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>免點、完整全身；偏柔偏糊、對比低</p>
       <div class="vpair">
         <figure class="v">
           <div class="tag">Test 1 · 角色</div>
-          <video class="vid" controls preload="metadata" src="影片評測/grok-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/grok-t1.mp4</code></div>
+          <video class="vid" controls preload="metadata" src="影片評測/hailuo-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/hailuo-t1.mp4</code></div>
         </figure>
         <figure class="v">
           <div class="tag">Test 2 · 場景</div>
-          <video class="vid" controls preload="metadata" src="影片評測/grok-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/grok-t2.mp4</code></div>
+          <video class="vid" controls preload="metadata" src="影片評測/hailuo-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/hailuo-t2.mp4</code></div>
         </figure>
       </div>
       </div>
     </div>
-    <div class="acc">
-      <button class="acc-h" data-t="p1-happyhorse">
-        <span class="rank">10</span>
-        <span class="nm">Happy Horse 1.1</span>
-        <span class="prov">Happy Horse</span>
-        <span class="score">87</span>
-        <span class="brk">構17·細16·美17·材14·光14·瑕9</span>
-        <span class="chev">▸</span>
-      </button>
-      <div class="acc-b" id="p1-happyhorse">
-      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>角色/場景都精緻、光影佳、旅人有走動；角色結尾飄成特寫、偏遊戲 CG 風</p>
-      <div class="vpair">
-        <figure class="v">
-          <div class="tag">Test 1 · 角色</div>
-          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-t1.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-t1.mp4</code></div>
-        </figure>
-        <figure class="v">
-          <div class="tag">Test 2 · 場景</div>
-          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-t2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-t2.mp4</code></div>
-        </figure>
-      </div>
-      </div>
+    <h3 class="grp">未測試</h3>
+    <div class="card" style="border-color:var(--gold);background:rgba(232,193,75,.06)">
+      <p style="margin:0;color:var(--tx2);font-size:13.5px"><b style="color:var(--gold)">⚠ Grok Imagine 1.5</b> — 圖生影片（image-to-video）模型，必須提供起始圖，無法用相同文字 prompt 公平比較，本階段未測試、不列入排名。使用時需額外注意這項限制。</p>
     </div>
   </section>
 
@@ -481,25 +455,6 @@
       </div>
     </div>
     <div class="acc">
-      <button class="acc-h" data-t="p2-happyhorse">
-        <span class="rank">8</span>
-        <span class="nm">Happy Horse 1.1</span>
-        <span class="prov">Happy Horse</span>
-        <span class="score">82</span>
-        <span class="brk">動20·人17·布18·武12·表8·瑕7</span>
-        <span class="chev">▸</span>
-      </button>
-      <div class="acc-b" id="p2-happyhorse">
-      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>動作完整、披風飄動佳；但動作略僵硬、手/劍銜接處有小瑕疵</p>
-      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
-        <figure class="v">
-          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-p2.mp4</code></div>
-        </figure>
-      </div>
-      </div>
-    </div>
-    <div class="acc">
       <button class="acc-h" data-t="p2-seedance">
         <span class="rank">4</span>
         <span class="nm">Seedance 2.0</span>
@@ -538,6 +493,25 @@
       </div>
     </div>
     <div class="acc">
+      <button class="acc-h" data-t="p2-ltx">
+        <span class="rank">6</span>
+        <span class="nm">LTX-2.3 Pro</span>
+        <span class="prov">Lightricks</span>
+        <span class="score">84</span>
+        <span class="brk">動21·人17·布18·武12·表8·瑕8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p2-ltx">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>動作完整、披風飄逸、1080p 銳利；劍身偏細、動態略平</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/ltx-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/ltx-p2.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
       <button class="acc-h" data-t="p2-motion">
         <span class="rank">7</span>
         <span class="nm">Motion 2.0</span>
@@ -557,20 +531,20 @@
       </div>
     </div>
     <div class="acc">
-      <button class="acc-h" data-t="p2-ltx">
-        <span class="rank">6</span>
-        <span class="nm">LTX-2.3 Pro</span>
-        <span class="prov">Lightricks</span>
-        <span class="score">84</span>
-        <span class="brk">動21·人17·布18·武12·表8·瑕8</span>
+      <button class="acc-h" data-t="p2-happyhorse">
+        <span class="rank">8</span>
+        <span class="nm">Happy Horse 1.1</span>
+        <span class="prov">Happy Horse</span>
+        <span class="score">82</span>
+        <span class="brk">動20·人17·布18·武12·表8·瑕7</span>
         <span class="chev">▸</span>
       </button>
-      <div class="acc-b" id="p2-ltx">
-      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>動作完整、披風飄逸、1080p 銳利；劍身偏細、動態略平</p>
+      <div class="acc-b" id="p2-happyhorse">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>動作完整、披風飄動佳；但動作略僵硬、中段披風突然變大、手/劍銜接處有小瑕疵</p>
       <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
         <figure class="v">
-          <video class="vid" controls preload="metadata" src="影片評測/ltx-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
-          <div class="ph" style="display:none">影片待放<br><code>影片評測/ltx-p2.mp4</code></div>
+          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-p2.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-p2.mp4</code></div>
         </figure>
       </div>
       </div>
@@ -596,8 +570,671 @@
     </div>
   </section>
 
+  <section id="phase3">
+    <h2><span class="ic">3️⃣</span>Phase 3 · Prompt 理解（Prompt Following）</h2>
+    <div class="card">
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>A knight stands on the left side. A dragon flies across the sky from left to right. The knight raises a glowing blue crystal sword. The camera slowly pushes in.</div>
+      <p class="sub" style="margin:8px 0 0">評估重點：模型有沒有「照 prompt 做」——位置、物件存在、方向、動作、運鏡是否都命中。每項命中 20 分。</p>
+      <div class="focus"><span>騎士在左</span><span>龍存在</span><span>龍方向（左→右）</span><span>舉劍</span><span>Push In 推近</span></div>
+    </div>
+    <h3 class="grp">評分（滿分 100，每項 20）</h3>
+    <table class="rb">
+      <thead><tr><th>項目</th><th>配分</th></tr></thead>
+      <tbody>
+        <tr><td>騎士站在左側</td><td class="pt">20</td></tr>
+        <tr><td>龍存在</td><td class="pt">20</td></tr>
+        <tr><td>龍方向正確（左→右）</td><td class="pt">20</td></tr>
+        <tr><td>舉起發光藍水晶劍</td><td class="pt">20</td></tr>
+        <tr><td>鏡頭緩慢推近（Push In）</td><td class="pt">20</td></tr>
+      </tbody>
+    </table>
+    <p class="sub">同一 prompt，各文生影片模型各 1 支。點模型展開影片。以下依 Prompt 命中總分排序。</p>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-gemini">
+        <span class="rank">1</span>
+        <span class="nm">Gemini Omni Flash</span>
+        <span class="prov">Google</span>
+        <span class="score">96</span>
+        <span class="brk">左18·龍20·向20·劍20·推18</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-gemini">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>開場騎士確實站在畫面左側，龍由左→中→右完整橫越、方向滿分，舉劍到位；由遠景全身一路推到胸上特寫，推近幅度大。（依實看影格修正：左側判定原扣過重，已補回）</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/gemini-p3.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-p3.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-kling">
+        <span class="rank">2</span>
+        <span class="nm">Kling 3.0</span>
+        <span class="prov">Kuaishou</span>
+        <span class="score">90</span>
+        <span class="brk">左20·龍20·向20·劍20·推10</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-kling">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>騎士在左、龍由最左入鏡橫越頭頂、從右出鏡，方向滿分；高舉發光藍劍完整；唯推近幅度小。（依實看影格二次修正：原「中途才入鏡」誤判）</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/kling-p3.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/kling-p3.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-happyhorse">
+        <span class="rank">3</span>
+        <span class="nm">Happy Horse 1.1</span>
+        <span class="prov">Happy Horse</span>
+        <span class="score">89</span>
+        <span class="brk">左13·龍20·向20·劍18·推18</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-happyhorse">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>龍由最左入鏡、飛越頭頂、從最右出鏡，橫越最完整、方向滿分；舉劍動作完整、由山丘全身遠景推到仰角半身特寫，推近也強；主要扣分是騎士偏畫面中央。</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-p3.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-p3.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-seedance">
+        <span class="rank">4</span>
+        <span class="nm">Seedance 2.0</span>
+        <span class="prov">ByteDance</span>
+        <span class="score">82</span>
+        <span class="brk">左12·龍18·向15·劍18·推19</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-seedance">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>拔劍清楚、巨龍存在感強且全程在畫面中、大致由左往右後方飛，原「開場即離場」誤判、已補分；推近從岩頂小人一路推到胸上特寫、全場最大；主要扣分在騎士偏中右。（依實看影格修正）</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/seedance-p3.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/seedance-p3.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-veo">
+        <span class="rank">5</span>
+        <span class="nm">Veo 3.1</span>
+        <span class="prov">Google</span>
+        <span class="score">76</span>
+        <span class="brk">左20·龍20·向6·劍20·推10</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-veo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>騎士明確在左、龍展翅最有魄力，拔起發光藍劍最有戲；但龍是朝鏡頭飛來、之後懸停在騎士旁，全程沒有「橫越天空」，方向分大幅下修。（依實看影格修正）</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/veo-p3.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/veo-p3.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-motion">
+        <span class="rank">6</span>
+        <span class="nm">Motion 2.0</span>
+        <span class="prov">Leonardo 自家</span>
+        <span class="score">71</span>
+        <span class="brk">左20·龍12·向4·劍20·推15</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-motion">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>騎士穩在左、藍水晶劍發光完整；但龍只是遠處一小隻發光體、細節看不清，且頭朝左、實際是右→左飛，方向與 prompt 相反，大扣分；推近其實有做出來（結尾推到手臂與劍身特寫），原「推近弱」誤判、已補分。（依實看影格修正：原評分過於寬鬆）</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/motion-p3.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/motion-p3.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-sora">
+        <span class="rank">7</span>
+        <span class="nm">Sora 2 Pro</span>
+        <span class="prov">OpenAI</span>
+        <span class="score">63</span>
+        <span class="brk">左20·龍8·向6·劍16·推13</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-sora">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>騎士在左、有中等幅度推近（非全場最強，原評過高）；但龍只在開頭一閃即消失，「龍存在」與「方向」大扣分。畫面漂亮但沒照 prompt 把龍留住。</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/sora-p3.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/sora-p3.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-hailuo">
+        <span class="rank">8</span>
+        <span class="nm">Hailuo 2.3</span>
+        <span class="prov">MiniMax</span>
+        <span class="score">61</span>
+        <span class="brk">左20·龍18·向5·劍12·推6</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-hailuo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>騎士在左、巨龍展翅氣勢足；但龍全程懸停在騎士右側、頭朝左，完全沒有橫越，方向大扣分；劍多為持握、未明確高舉，畫面偏暗。（依實看影格修正）</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/hailuo-p3.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/hailuo-p3.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p3-ltx">
+        <span class="rank">9</span>
+        <span class="nm">LTX-2.3 Pro</span>
+        <span class="prov">Lightricks</span>
+        <span class="score">54</span>
+        <span class="brk">左6·龍16·向6·劍18·推8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p3-ltx">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>畫質細緻、舉劍清楚；但構圖過近、騎士幾乎滿版而非在左，龍在右側進出、路徑忽左忽右沒有明確橫越，推近與位置命中最差。（依實看影格修正）</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:760px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/ltx-p3.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/ltx-p3.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="phase4">
+    <h2><span class="ic">4️⃣</span>Phase 4 · Reference 保留（Reference Following）</h2>
+    <div class="card">
+      <p class="sub" style="margin:0 0 10px">固定同一張 <b>Image Reference</b>（下方角色），各模型跑同一個轉身動作 prompt，看生成影片能不能「保住這個角色」——風格、長相、配色、構圖有沒有跑掉。</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:300px;margin:0 auto 12px">
+        <figure class="v">
+          <img src="教學圖/p4-ref.png" style="width:100%;border-radius:11px;background:#fff" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:none">參考角色圖待放<br><code>教學圖/p4-ref.png</code></div>
+        </figure>
+        <p class="sub" style="text-align:center;margin:6px 0 0">固定 Image Reference：金翼白甲女角</p>
+      </div>
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>The character slowly turns around, looks toward the camera, and smiles.</div>
+      <p class="sub" style="margin:8px 0 0">評估重點：不是看動作漂不漂亮，而是「還是不是同一個角色」。</p>
+      <div class="focus"><span>風格保留</span><span>角色一致</span><span>配色保留</span><span>構圖完整</span></div>
+    </div>
+    <h3 class="grp">評分（滿分 100）</h3>
+    <table class="rb">
+      <thead><tr><th>項目</th><th>配分</th><th>看什麼</th></tr></thead>
+      <tbody>
+        <tr><td>Style Preservation 風格保留</td><td class="pt">40</td><td style="color:var(--tx3);font-size:12.5px">動漫還是動漫？畫風有沒有變寫實／崩掉</td></tr>
+        <tr><td>Character Identity 角色一致</td><td class="pt">30</td><td style="color:var(--tx3);font-size:12.5px">是不是同一個人（臉、髮型、體態）</td></tr>
+        <tr><td>Color Preservation 配色保留</td><td class="pt">20</td><td style="color:var(--tx3);font-size:12.5px">衣服、頭髮、武器的顏色對不對</td></tr>
+        <tr><td>Composition 構圖完整</td><td class="pt">10</td><td style="color:var(--tx3);font-size:12.5px">有沒有亂裁切、角色跑出畫面</td></tr>
+      </tbody>
+    </table>
+    <div class="card" style="border-color:var(--gold);background:rgba(232,193,75,.06)">
+      <p style="margin:0;color:var(--tx2);font-size:13.5px"><b style="color:var(--gold)">⚠️ 只有支援 Image Reference 的模型能測。</b> 本站 9 個模型中，僅 <b>Veo 3.1、Gemini Omni Flash、Seedance 2.0、Happy Horse 1.1</b> 有 Image Reference 功能。其餘 <b>Sora 2 Pro、Kling 3.0、LTX-2.3 Pro、Motion 2.0、Hailuo 2.3</b> 只有 Start Frame（起始圖）、沒有 Image Reference，本階段<b>略過不評</b>。</p>
+    </div>
+    <p class="sub">以下依 Reference 保留總分排序。</p>
+    <div class="acc">
+      <button class="acc-h" data-t="p4-gemini">
+        <span class="rank">1</span>
+        <span class="nm">Gemini Omni Flash</span>
+        <span class="prov">Google</span>
+        <span class="score">97</span>
+        <span class="brk">風40·角29·色20·構8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p4-gemini">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>幾乎完美保留——動漫畫風、金翼白藍金甲、髮色與臉型全對，全身入鏡不裁切。轉身較像原地旋轉、笑容偏淡，但 Reference 保留最強。</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:420px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/gemini-p4.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-p4.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p4-happyhorse">
+        <span class="rank">2</span>
+        <span class="nm">Happy Horse 1.1</span>
+        <span class="prov">Happy Horse</span>
+        <span class="score">90</span>
+        <span class="brk">風38·角27·色20·構5</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p4-happyhorse">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>角色高度一致、臉型與配色都對，「轉身→面向鏡頭→微笑」的指令執行最完整。但開場約三分之一鏡頭從背面下半身起、頭部被裁出畫面，且多了一件參考圖沒有的金色披風；後段推近裁到胸上。（依實看影格修正）</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:420px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-p4.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-p4.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p4-seedance">
+        <span class="rank">3</span>
+        <span class="nm">Seedance 2.0</span>
+        <span class="prov">ByteDance</span>
+        <span class="score">90</span>
+        <span class="brk">風37·角26·色20·構7</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p4-seedance">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>動漫風與配色保留漂亮、仍是同一角色；臉部略有變化、後段推近裁掉下半身。</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:420px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/seedance-p4.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/seedance-p4.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p4-veo">
+        <span class="rank">4</span>
+        <span class="nm">Veo 3.1</span>
+        <span class="prov">Google</span>
+        <span class="score">16</span>
+        <span class="brk">風4·角2·色2·構8</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p4-veo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>Reference 幾乎完全沒吃到——把動漫角色換成<b>室內寫實棕髮女、米色毛衣</b>，畫風、長相、配色全跑掉，只做到「轉身＋微笑」的動作。同是 Google 模型，Gemini 拿第一、Veo 墊底，差異極大。</p>
+      <div class="vpair" style="grid-template-columns:1fr;max-width:420px">
+        <figure class="v">
+          <video class="vid" controls preload="metadata" src="影片評測/veo-p4.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/veo-p4.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <h3 class="grp">略過（無 Image Reference）</h3>
+    <div class="card">
+      <p style="margin:0;color:var(--tx3);font-size:13px">Sora 2 Pro · Kling 3.0 · LTX-2.3 Pro · Motion 2.0 · Hailuo 2.3 — 只支援 Start Frame，無法固定 Image Reference，本階段不列入評分。</p>
+    </div>
+  </section>
+
+  <section id="phase5">
+    <h2><span class="ic">5️⃣</span>Phase 5 · 運鏡控制（Camera Control）</h2>
+    <div class="card">
+      <p class="sub" style="margin:0 0 10px">固定同一句主體 <code>A female knight in white armor stands in an ancient temple.</code>，各模型跑四種運鏡指令，看它「真的有做出那個運鏡」嗎。四項各 25 分。</p>
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>A female knight in white armor stands in an ancient temple. Slow cinematic dolly in.</div>
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>A female knight in white armor stands in an ancient temple. Orbit around the character.</div>
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>A female knight in white armor stands in an ancient temple. Slow pan from left to right.</div>
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>A female knight in white armor stands in an ancient temple. Crane shot from above.</div>
+      <div class="focus"><span>推近 Dolly</span><span>環繞 Orbit</span><span>橫搖 Pan</span><span>俯拍 Crane</span></div>
+    </div>
+    <h3 class="grp">評分（滿分 100，每項 25）</h3>
+    <table class="rb">
+      <thead><tr><th>項目</th><th>配分</th><th>看什麼</th></tr></thead>
+      <tbody>
+        <tr><td>Dolly 推近</td><td class="pt">25</td><td style="color:var(--tx3);font-size:12.5px">鏡頭是否往前推、主體漸放大</td></tr>
+        <tr><td>Orbit 環繞</td><td class="pt">25</td><td style="color:var(--tx3);font-size:12.5px">是否繞著角色轉、看到不同面向</td></tr>
+        <tr><td>Pan 橫搖</td><td class="pt">25</td><td style="color:var(--tx3);font-size:12.5px">鏡頭是否水平由左掃到右</td></tr>
+        <tr><td>Crane 俯拍</td><td class="pt">25</td><td style="color:var(--tx3);font-size:12.5px">是否從高處／正上方往下拍</td></tr>
+      </tbody>
+    </table>
+    <p class="sub">同一主體、四種運鏡各 1 支（每模型 4 支）。點模型展開四個運鏡。以下依運鏡命中總分排序。</p>
+    <div class="acc">
+      <button class="acc-h" data-t="p5-gemini"><span class="rank">1</span><span class="nm">Gemini Omni Flash</span><span class="prov">Google</span><span class="score">83</span><span class="brk">推24·環22·搖20·俯17</span><span class="chev">▸</span></button>
+      <div class="acc-b" id="p5-gemini">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>四種運鏡都做得出來，推近／環繞／橫搖最到位；俯拍偏「略高角度」而非大幅度下降。整體運鏡理解最好。</p>
+      <div class="vpair" style="grid-template-columns:1fr 1fr;max-width:760px">
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/gemini-p5-dolly.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>gemini-p5-dolly.mp4</code></div><figcaption class="sub" style="text-align:center">推近 Dolly · 24/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/gemini-p5-orbit.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>gemini-p5-orbit.mp4</code></div><figcaption class="sub" style="text-align:center">環繞 Orbit · 22/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/gemini-p5-pan.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>gemini-p5-pan.mp4</code></div><figcaption class="sub" style="text-align:center">橫搖 Pan · 20/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/gemini-p5-crane.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>gemini-p5-crane.mp4</code></div><figcaption class="sub" style="text-align:center">俯拍 Crane · 17/25</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p5-seedance"><span class="rank">2</span><span class="nm">Seedance 2.0</span><span class="prov">ByteDance</span><span class="score">77</span><span class="brk">推23·環15·搖16·俯23</span><span class="chev">▸</span></button>
+      <div class="acc-b" id="p5-seedance">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>推近與俯拍（從高處往下降）最漂亮；環繞與橫搖幅度中等。</p>
+      <div class="vpair" style="grid-template-columns:1fr 1fr;max-width:760px">
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/seedance-p5-dolly.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>seedance-p5-dolly.mp4</code></div><figcaption class="sub" style="text-align:center">推近 Dolly · 23/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/seedance-p5-orbit.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>seedance-p5-orbit.mp4</code></div><figcaption class="sub" style="text-align:center">環繞 Orbit · 15/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/seedance-p5-pan.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>seedance-p5-pan.mp4</code></div><figcaption class="sub" style="text-align:center">橫搖 Pan · 16/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/seedance-p5-crane.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>seedance-p5-crane.mp4</code></div><figcaption class="sub" style="text-align:center">俯拍 Crane · 23/25</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p5-kling"><span class="rank">3</span><span class="nm">Kling 3.0</span><span class="prov">Kuaishou</span><span class="score">63</span><span class="brk">推8·環23·搖8·俯24</span><span class="chev">▸</span></button>
+      <div class="acc-b" id="p5-kling">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>環繞（轉到背面）與俯拍（正上方鳥瞰）最強；但推近與橫搖幾乎沒動。</p>
+      <div class="vpair" style="grid-template-columns:1fr 1fr;max-width:760px">
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/kling-p5-dolly.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>kling-p5-dolly.mp4</code></div><figcaption class="sub" style="text-align:center">推近 Dolly · 8/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/kling-p5-orbit.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>kling-p5-orbit.mp4</code></div><figcaption class="sub" style="text-align:center">環繞 Orbit · 23/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/kling-p5-pan.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>kling-p5-pan.mp4</code></div><figcaption class="sub" style="text-align:center">橫搖 Pan · 8/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/kling-p5-crane.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>kling-p5-crane.mp4</code></div><figcaption class="sub" style="text-align:center">俯拍 Crane · 24/25</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p5-veo"><span class="rank">4</span><span class="nm">Veo 3.1</span><span class="prov">Google</span><span class="score">60</span><span class="brk">推23·環20·搖10·俯7</span><span class="chev">▸</span></button>
+      <div class="acc-b" id="p5-veo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>推近、環繞清楚；橫搖只有開頭小幅掃動便定住；「俯拍」沒做出來、維持平視，Crane 大扣分。（依實看影格修正）</p>
+      <div class="vpair" style="grid-template-columns:1fr 1fr;max-width:760px">
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/veo-p5-dolly.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>veo-p5-dolly.mp4</code></div><figcaption class="sub" style="text-align:center">推近 Dolly · 23/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/veo-p5-orbit.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>veo-p5-orbit.mp4</code></div><figcaption class="sub" style="text-align:center">環繞 Orbit · 20/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/veo-p5-pan.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>veo-p5-pan.mp4</code></div><figcaption class="sub" style="text-align:center">橫搖 Pan · 10/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/veo-p5-crane.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>veo-p5-crane.mp4</code></div><figcaption class="sub" style="text-align:center">俯拍 Crane · 7/25</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p5-happyhorse"><span class="rank">5</span><span class="nm">Happy Horse 1.1</span><span class="prov">Happy Horse</span><span class="score">60</span><span class="brk">推23·環17·搖12·俯8</span><span class="chev">▸</span></button>
+      <div class="acc-b" id="p5-happyhorse">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>推近強、環繞中等；橫搖實為「推近＋輕微側移」、非真正水平掃動；俯拍全程平視，皆下修。（依實看影格修正）</p>
+      <div class="vpair" style="grid-template-columns:1fr 1fr;max-width:760px">
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/happyhorse-p5-dolly.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>happyhorse-p5-dolly.mp4</code></div><figcaption class="sub" style="text-align:center">推近 Dolly · 23/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/happyhorse-p5-orbit.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>happyhorse-p5-orbit.mp4</code></div><figcaption class="sub" style="text-align:center">環繞 Orbit · 17/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/happyhorse-p5-pan.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>happyhorse-p5-pan.mp4</code></div><figcaption class="sub" style="text-align:center">橫搖 Pan · 12/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/happyhorse-p5-crane.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>happyhorse-p5-crane.mp4</code></div><figcaption class="sub" style="text-align:center">俯拍 Crane · 8/25</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p5-ltx"><span class="rank">6</span><span class="nm">LTX-2.3 Pro</span><span class="prov">Lightricks</span><span class="score">50</span><span class="brk">推12·環8·搖8·俯22</span><span class="chev">▸</span></button>
+      <div class="acc-b" id="p5-ltx">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>俯拍下降清楚；橫搖實看構圖幾乎全程靜止，大扣分；推近輕微、環繞變成拉遠。（依實看影格修正）</p>
+      <div class="vpair" style="grid-template-columns:1fr 1fr;max-width:760px">
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/ltx-p5-dolly.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>ltx-p5-dolly.mp4</code></div><figcaption class="sub" style="text-align:center">推近 Dolly · 12/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/ltx-p5-orbit.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>ltx-p5-orbit.mp4</code></div><figcaption class="sub" style="text-align:center">環繞 Orbit · 8/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/ltx-p5-pan.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>ltx-p5-pan.mp4</code></div><figcaption class="sub" style="text-align:center">橫搖 Pan · 8/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/ltx-p5-crane.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>ltx-p5-crane.mp4</code></div><figcaption class="sub" style="text-align:center">俯拍 Crane · 22/25</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p5-sora"><span class="rank">7</span><span class="nm">Sora 2 Pro</span><span class="prov">OpenAI</span><span class="score">36</span><span class="brk">推8·環12·搖7·俯9</span><span class="chev">▸</span></button>
+      <div class="acc-b" id="p5-sora">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>環繞有做出約半圈（正面→側面→背面）但同時大幅拉遠、非乾淨繞行，是四項中最好的一項；其餘近乎靜止或自作主張加別的動態。（依實看影格修正）</p>
+      <div class="vpair" style="grid-template-columns:1fr 1fr;max-width:760px">
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/sora-p5-dolly.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>sora-p5-dolly.mp4</code></div><figcaption class="sub" style="text-align:center">推近 Dolly · 8/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/sora-p5-orbit.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>sora-p5-orbit.mp4</code></div><figcaption class="sub" style="text-align:center">環繞 Orbit · 12/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/sora-p5-pan.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>sora-p5-pan.mp4</code></div><figcaption class="sub" style="text-align:center">橫搖 Pan · 7/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/sora-p5-crane.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>sora-p5-crane.mp4</code></div><figcaption class="sub" style="text-align:center">俯拍 Crane · 9/25</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p5-hailuo"><span class="rank">8</span><span class="nm">Hailuo 2.3</span><span class="prov">MiniMax</span><span class="score">27</span><span class="brk">推8·環5·搖6·俯8</span><span class="chev">▸</span></button>
+      <div class="acc-b" id="p5-hailuo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>四項皆弱：橫搖實看是「主體沿走廊走向鏡頭」、鏡頭本身沒有水平掃動，其餘三項也幾乎不動。（依實看影格修正）</p>
+      <div class="vpair" style="grid-template-columns:1fr 1fr;max-width:760px">
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/hailuo-p5-dolly.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>hailuo-p5-dolly.mp4</code></div><figcaption class="sub" style="text-align:center">推近 Dolly · 8/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/hailuo-p5-orbit.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>hailuo-p5-orbit.mp4</code></div><figcaption class="sub" style="text-align:center">環繞 Orbit · 5/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/hailuo-p5-pan.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>hailuo-p5-pan.mp4</code></div><figcaption class="sub" style="text-align:center">橫搖 Pan · 6/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/hailuo-p5-crane.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>hailuo-p5-crane.mp4</code></div><figcaption class="sub" style="text-align:center">俯拍 Crane · 8/25</figcaption></figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p5-motion"><span class="rank">9</span><span class="nm">Motion 2.0</span><span class="prov">Leonardo 自家</span><span class="score">25</span><span class="brk">推7·環5·搖7·俯6</span><span class="chev">▸</span></button>
+      <div class="acc-b" id="p5-motion">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>最弱；甚至把「Crane shot（運鏡術語）」誤解成畫面裡放一隻<b>鶴（crane 鳥）</b>，運鏡控制最差。</p>
+      <div class="vpair" style="grid-template-columns:1fr 1fr;max-width:760px">
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/motion-p5-dolly.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>motion-p5-dolly.mp4</code></div><figcaption class="sub" style="text-align:center">推近 Dolly · 7/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/motion-p5-orbit.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>motion-p5-orbit.mp4</code></div><figcaption class="sub" style="text-align:center">環繞 Orbit · 5/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/motion-p5-pan.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>motion-p5-pan.mp4</code></div><figcaption class="sub" style="text-align:center">橫搖 Pan · 7/25</figcaption></figure>
+        <figure class="v"><video class="vid" controls preload="metadata" src="影片評測/motion-p5-crane.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video><div class="ph" style="display:none">影片待放<br><code>motion-p5-crane.mp4</code></div><figcaption class="sub" style="text-align:center">俯拍 Crane · 6/25（誤放鶴）</figcaption></figure>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="phase6">
+    <h2><span class="ic">6️⃣</span>Phase 6 · 中文理解（Chinese Prompt Following）</h2>
+    <div class="card">
+      <p class="sub" style="margin:0 0 10px">用 Phase 3 的同一個指令做<b>中英對照</b>：英文版直接沿用 Phase 3 影片與評分，中文版重新生成，同樣以五項命中（騎士在左、龍存在、龍方向左→右、舉發光藍劍、鏡頭推近，各 20 分）評分，看中文 prompt 是否退化。</p>
+      <div class="prompt"><button class="cp" onclick="copyPrompt(this)">複製</button>一名騎士站在畫面左側。一條龍從天空中由左向右飛過。騎士舉起一把散發藍色光芒的水晶劍。鏡頭緩慢向前推進。</div>
+      <div class="prompt" style="margin-top:8px"><button class="cp" onclick="copyPrompt(this)">複製</button>A knight stands on the left side. A dragon flies across the sky from left to right. The knight raises a glowing blue crystal sword. The camera slowly pushes in.</div>
+      <div class="focus"><span>騎士在左</span><span>龍存在</span><span>龍方向（左→右）</span><span>舉劍</span><span>Push In 推近</span><span>中英落差</span></div>
+    </div>
+    <h3 class="grp">評分（滿分 100，每項 20）</h3>
+    <table class="rb">
+      <thead><tr><th>項目</th><th>配分</th><th>判斷內容</th></tr></thead>
+      <tbody>
+        <tr><td>騎士站在左側</td><td class="pt">20</td><td>主體位置是否照指令放在畫面左側</td></tr>
+        <tr><td>龍存在</td><td class="pt">20</td><td>畫面中是否真的有龍、是否清楚可辨</td></tr>
+        <tr><td>龍方向正確（左→右）</td><td class="pt">20</td><td>龍是否確實「橫越天空」且由左往右飛</td></tr>
+        <tr><td>舉起發光藍水晶劍</td><td class="pt">20</td><td>舉劍動作 + 藍色發光 + 水晶質感是否齊備</td></tr>
+        <tr><td>鏡頭緩慢推近（Push In）</td><td class="pt">20</td><td>是鏡頭真的推近，不是主體自己走近</td></tr>
+      </tbody>
+    </table>
+    <p class="sub">與 Phase 3 完全相同的評分標準，中英文版各評一次；「中英落差」= 中文版總分 − 英文版總分，正值代表中文版表現更好。</p>
+    <h3 class="grp">結果（依中文版總分排序）</h3>
+    <div class="acc">
+      <button class="acc-h" data-t="p6-gemini">
+        <span class="rank">1</span>
+        <span class="nm">Gemini Omni Flash</span>
+        <span class="prov">Google</span>
+        <span class="score">92</span>
+        <span class="brk">左20·龍20·向16·劍20·推16｜英文 96 → 中文 92（-4）</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p6-gemini">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>中文版幾乎無退化：騎士在左、龍由左向右橫越、舉劍發光、推近都到位，只有方向與推近幅度略小於英文版。</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">英文 Prompt（96 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/gemini-p6-en.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-p6-en.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">中文 Prompt（92 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/gemini-p6-zh.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/gemini-p6-zh.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p6-kling">
+        <span class="rank">2</span>
+        <span class="nm">Kling 3.0</span>
+        <span class="prov">Kuaishou</span>
+        <span class="score">90</span>
+        <span class="brk">左20·龍20·向18·劍20·推12｜英文 90 → 中文 90（0）</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p6-kling">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>中英幾乎零落差：兩版的龍都完整由左向右橫越、舉劍發光完整，只有細部運鏡略有差異。</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">英文 Prompt（90 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/kling-p6-en.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/kling-p6-en.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">中文 Prompt（90 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/kling-p6-zh.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/kling-p6-zh.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p6-seedance">
+        <span class="rank">3</span>
+        <span class="nm">Seedance 2.0</span>
+        <span class="prov">ByteDance</span>
+        <span class="score">86</span>
+        <span class="brk">左10·龍20·向18·劍20·推18｜英文 82 → 中文 86（+4）</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p6-seedance">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>中文理解良好：龍橫越、舉劍、推近都做到；和英文版一樣的弱點——騎士站中間而非左側。</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">英文 Prompt（82 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/seedance-p6-en.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/seedance-p6-en.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">中文 Prompt（86 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/seedance-p6-zh.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/seedance-p6-zh.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p6-hailuo">
+        <span class="rank">4</span>
+        <span class="nm">Hailuo 2.3</span>
+        <span class="prov">MiniMax</span>
+        <span class="score">78</span>
+        <span class="brk">左18·龍20·向8·劍20·推12｜英文 61 → 中文 78（+17）</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p6-hailuo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>中文版進步主要在「舉劍」：英文版全程沒舉劍（12 分），中文版巨大發光藍劍極明確（20 分）；但龍是先朝騎士飛來再轉向右、方向仍混亂，向只給 8。（依實看影格二次修正）</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">英文 Prompt（61 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/hailuo-p6-en.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/hailuo-p6-en.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">中文 Prompt（78 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/hailuo-p6-zh.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/hailuo-p6-zh.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p6-motion">
+        <span class="rank">5</span>
+        <span class="nm">Motion 2.0</span>
+        <span class="prov">Leonardo 自家</span>
+        <span class="score">74</span>
+        <span class="brk">左20·龍20·向8·劍16·推10｜英文 71 → 中文 74（+3）</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p6-motion">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>中文版龍大而清楚（英文版只是遠處小點，龍 12→20），但實看是繞圈飛、頭多半朝左，方向與英文版一樣不合格（8）；劍持在胸前未高舉（16）。總分與英文版僅差 3，基本同級。（依實看影格二次修正）</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">英文 Prompt（71 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/motion-p6-en.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/motion-p6-en.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">中文 Prompt（74 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/motion-p6-zh.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/motion-p6-zh.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p6-happyhorse">
+        <span class="rank">6</span>
+        <span class="nm">Happy Horse 1.1</span>
+        <span class="prov">Happy Horse</span>
+        <span class="score">74</span>
+        <span class="brk">左8·龍20·向16·劍18·推12｜英文 79 → 中文 74（-5）</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p6-happyhorse">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>小幅退化：龍與舉劍仍有，但騎士改站畫面中央（英文版也偏中但更明顯），方向較不乾脆。</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">英文 Prompt（79 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-p6-en.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-p6-en.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">中文 Prompt（74 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/happyhorse-p6-zh.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/happyhorse-p6-zh.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p6-ltx">
+        <span class="rank">7</span>
+        <span class="nm">LTX-2.3 Pro</span>
+        <span class="prov">Lightricks</span>
+        <span class="score">61</span>
+        <span class="brk">左8·龍18·向5·劍16·推14｜英文 54 → 中文 61（+7）</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p6-ltx">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>中文版構圖不再滿版（英文版最大扣分項），但騎士其實站中間非左側（8）、龍從右側入鏡向左飛、方向錯誤（5）。小幅優於英文版。（依實看影格二次修正）</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">英文 Prompt（54 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/ltx-p6-en.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/ltx-p6-en.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">中文 Prompt（61 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/ltx-p6-zh.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/ltx-p6-zh.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" data-t="p6-veo">
+        <span class="rank">8</span>
+        <span class="nm">Veo 3.1</span>
+        <span class="prov">Google</span>
+        <span class="score">22</span>
+        <span class="brk">左10·龍0·向0·劍8·推4｜英文 76 → 中文 22（-54）</span>
+        <span class="chev">▸</span>
+      </button>
+      <div class="acc-b" id="p6-veo">
+      <p style="color:var(--tx2);font-size:13.5px;margin:2px 0 10px"><b style="color:#fff">評語：</b>災難級退化：中文 prompt 被理解成「遊戲過場畫面」，輸出滿螢幕中文字幕與介面元素，剪影角色持劍站在月下，沒有龍、沒有舉劍、沒有推近。中文使用者需特別注意。</p>
+      <div class="vpair">
+        <figure class="v">
+          <div class="tag">英文 Prompt（90 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/veo-p6-en.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/veo-p6-en.mp4</code></div>
+        </figure>
+        <figure class="v">
+          <div class="tag">中文 Prompt（22 分）</div>
+          <video class="vid" controls preload="metadata" src="影片評測/veo-p6-zh.mp4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"></video>
+          <div class="ph" style="display:none">影片待放<br><code>影片評測/veo-p6-zh.mp4</code></div>
+        </figure>
+      </div>
+      </div>
+    </div>
+    <h3 class="grp">無法測試</h3>
+    <div class="card" style="border-color:var(--gold);background:rgba(232,193,75,.06)">
+      <p style="margin:0;color:var(--tx2);font-size:13.5px"><b style="color:var(--gold)">Sora 2 Pro</b> — 2026 年 7 月測試時已從 Leonardo 下架（Video / Legacy 清單皆無），本階段無法測試。</p>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <p style="margin:0;color:var(--tx2);font-size:13.5px"><b style="color:#fff">重點結論：</b>八個模型中多數中文版與英文版同級或更好（Hailuo 明顯更好；Seedance、Motion、LTX 小幅領先；Gemini、Kling 幾乎無落差；Happy Horse 小退），唯一災難是 <b>Veo 3.1</b>——中文 prompt 被當成遊戲字幕畫面，完全沒照指令執行。用中文下 prompt 時，Veo 一定要先翻成英文。</p>
+    </div>
+  </section>
+
   </main>
-  ===== /隱藏區 ===== -->
 </div>
 <script>
 function copyPrompt(btn){
